@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    body{ margin:0; background:#F5F0E2; color:#241F15; font-family:"Nunito",system-ui,sans-serif; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ color:#2C5E3F; }
+    ::selection{ background:#F2BE45; color:#241F15; }
+    input:focus, select:focus{ outline:2px solid #2C5E3F; }
+    @keyframes popIn{ 0%{ transform:scale(.6); opacity:0 } 70%{ transform:scale(1.12)} 100%{ transform:scale(1); opacity:1 } }
+  </style>
+</helmet>
+
+<div data-screen-label="Link Maker" style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:30px 16px">
+  <div style="width:min(560px,100%); display:flex; flex-direction:column; gap:18px">
+
+    <div style="display:flex; align-items:center; gap:12px">
+      <span style="width:44px; height:44px; border-radius:50%; flex:none; display:grid; place-items:center; overflow:visible"><img src="assets/gubli-logo.png" alt="Gubly" style="width:120%; height:120%; object-fit:contain"></span>
+      <div>
+        <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:20px">Vibe Check · Link Maker</div>
+        <div style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:rgba(36,31,21,.55)">for you only — fill in, copy, send</div>
+      </div>
+    </div>
+
+    <div style="background:#FFFDF4; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:28px; display:flex; flex-direction:column; gap:16px; box-shadow:0 14px 34px rgba(36,31,21,.07)">
+      <label style="display:flex; flex-direction:column; gap:6px">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(36,31,21,.6)">Business name</span>
+        <input onInput="{{ onName }}" value="{{ name }}" placeholder="Luna Café" style="border-radius:999px; border:1.5px solid rgba(36,31,21,.16); padding:12px 18px; font-size:15px; font-family:'Nunito',sans-serif; background:#F5F0E2">
+      </label>
+      <label style="display:flex; flex-direction:column; gap:6px">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(36,31,21,.6)">Contact person</span>
+        <input onInput="{{ onContact }}" value="{{ contact }}" placeholder="Selin" style="border-radius:999px; border:1.5px solid rgba(36,31,21,.16); padding:12px 18px; font-size:15px; font-family:'Nunito',sans-serif; background:#F5F0E2">
+      </label>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px">
+        <label style="display:flex; flex-direction:column; gap:6px">
+          <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(36,31,21,.6)">Type</span>
+          <select onChange="{{ onType }}" value="{{ type }}" style="border-radius:999px; border:1.5px solid rgba(36,31,21,.16); padding:12px 16px; font-size:15px; font-family:'Nunito',sans-serif; background:#F5F0E2; cursor:pointer">
+            <option value="cafe">Café ☕</option>
+            <option value="restaurant">Restaurant 🍽</option>
+            <option value="bar">Bar 🍸</option>
+            <option value="bakery">Bakery 🥐</option>
+            <option value="retail">Retail 🛍</option>
+          </select>
+        </label>
+        <label style="display:flex; flex-direction:column; gap:6px">
+          <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(36,31,21,.6)">Language</span>
+          <select onChange="{{ onLang }}" value="{{ lang }}" style="border-radius:999px; border:1.5px solid rgba(36,31,21,.16); padding:12px 16px; font-size:15px; font-family:'Nunito',sans-serif; background:#F5F0E2; cursor:pointer">
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+          </select>
+        </label>
+      </div>
+
+      <div style="border-top:1.5px dashed rgba(36,31,21,.18); padding-top:16px; display:flex; flex-direction:column; gap:10px">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(36,31,21,.6)">Client link</span>
+        <div style="background:#F5F0E2; border:1.5px solid rgba(36,31,21,.12); border-radius:18px; padding:12px 16px; font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:#2C5E3F; overflow-wrap:anywhere">{{ link }}</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button onClick="{{ copy }}" style="flex:1; font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; padding:12px 22px; border-radius:999px; border:0; cursor:pointer; background:#2C5E3F; color:#FFFDF4; transition:transform .18s ease" style-hover="transform:translateY(-2px)">{{ copyLabel }}</button>
+          <a href="{{ link }}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; padding:12px 22px; border-radius:999px; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.16); transition:transform .18s ease" style-hover="transform:translateY(-2px); color:#241F15">Preview ↗</a>
+        </div>
+        <span style="font-size:12.5px; color:rgba(36,31,21,.5)">In the real product this becomes gub.li/{{ slug }} with a secret token — see the handoff spec.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { name: '', contact: '', type: 'cafe', lang: 'en', copied: false };
+
+  renderVals() {
+    const s = this.state;
+    const slug = (s.name || 'luna-cafe').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const p = new URLSearchParams();
+    if (s.name) p.set('name', s.name);
+    if (s.contact) p.set('contact', s.contact);
+    p.set('type', s.type);
+    p.set('lang', s.lang);
+    p.set('c', slug);
+    const link = 'Vibe Check.dc.html?' + p.toString();
+    return {
+      name: s.name, contact: s.contact, type: s.type, lang: s.lang, slug, link,
+      onName: (e) => this.setState({ name: e.currentTarget.value, copied: false }),
+      onContact: (e) => this.setState({ contact: e.currentTarget.value, copied: false }),
+      onType: (e) => this.setState({ type: e.currentTarget.value, copied: false }),
+      onLang: (e) => this.setState({ lang: e.currentTarget.value, copied: false }),
+      copyLabel: s.copied ? '✓ Copied!' : '🔗 Copy link',
+      copy: () => {
+        try { navigator.clipboard.writeText(new URL(link, window.location.href).href); } catch (e) {}
+        this.setState({ copied: true });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

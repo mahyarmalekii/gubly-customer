@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Baloo+2:wght@600;700;800&amp;family=Gluten:wght@600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;family=DM+Serif+Display&amp;family=Space+Grotesk:wght@400;500;700&amp;family=Archivo+Black&amp;family=Cormorant+Garamond:wght@500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body{ margin:0; background:#F5F0E2; color:#241F15; font-family:"Nunito",system-ui,sans-serif; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; text-wrap:pretty; }
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ color:#2C5E3F; }
+    ::selection{ background:#F2BE45; color:#241F15; }
+    @keyframes pulse{ 0%,100%{ opacity:1; transform:scale(1)} 50%{ opacity:.4; transform:scale(.7)} }
+    @keyframes floaty{ 0%,100%{ transform:translateY(0) rotate(4deg)} 50%{ transform:translateY(-10px) rotate(7deg)} }
+    @keyframes popIn{ 0%{ transform:scale(.6); opacity:0 } 70%{ transform:scale(1.12)} 100%{ transform:scale(1); opacity:1 } }
+    @keyframes scribDraw{ from{ stroke-dashoffset:100 } to{ stroke-dashoffset:0 } }
+    textarea{ font-family:"Nunito",sans-serif; }
+    textarea:focus{ outline:2px solid #2C5E3F; }
+    image-slot{ width:100% !important; height:100% !important; display:block; }
+  </style>
+</helmet>
+
+<div data-screen-label="Client Moodboard" style="min-height:100vh; overflow-x:hidden; position:relative">
+
+  <!-- ── Topbar ── -->
+  <div style="position:fixed; top:14px; left:0; right:0; z-index:50; display:flex; justify-content:center; padding:0 16px; pointer-events:none">
+    <div style="pointer-events:auto; display:flex; align-items:center; gap:18px; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.10); border-radius:999px; padding:8px 10px 8px 14px; width:min(1080px,100%); box-shadow:0 6px 22px rgba(36,31,21,.07)">
+      <div style="display:flex; align-items:center; gap:10px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px">
+        <span style="width:32px; height:32px; border-radius:50%; flex:none; display:grid; place-items:center; overflow:visible"><img src="assets/gubli-logo.png" alt="Gubly" style="width:126%; height:126%; object-fit:contain; margin:-13%"></span>
+        <span style="white-space:nowrap">Gubly <span style="color:rgba(36,31,21,.5); font-weight:500">× {{ clientName }}</span></span>
+      </div>
+      <nav style="display:flex; gap:4px; margin:0 auto">
+        <a href="#styles" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Styles</a>
+        <a href="#colors" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Colors</a>
+        <a href="#fonts" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Fonts</a>
+        <a href="#refs" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Sites</a>
+        <a href="#photos" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Photos</a>
+        <a href="#extras" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Extras</a>
+      </nav>
+      <div style="display:flex; gap:2px; background:#F5F0E2; border-radius:999px; padding:3px">
+        <button onClick="{{ setEn }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.05em; border:0; background:{{ langEnBg }}; color:{{ langEnFg }}; padding:5px 11px; border-radius:999px; cursor:pointer">EN</button>
+        <button onClick="{{ setDe }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.05em; border:0; background:{{ langDeBg }}; color:{{ langDeFg }}; padding:5px 11px; border-radius:999px; cursor:pointer">DE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Hero: pinboard collage ── -->
+  <div style="max-width:1080px; margin:0 auto; padding:104px 16px 0">
+    <div style="display:flex; flex-wrap:wrap; gap:30px; align-items:center; min-height:520px; background-image:radial-gradient(rgba(36,31,21,.07) 1.5px, transparent 1.5px); background-size:26px 26px; border-radius:40px; padding:34px 10px">
+
+      <!-- left: headline -->
+      <div style="flex:1.15; min-width:320px; padding:10px 24px; transform:rotate(-1deg)">
+        <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:22px">
+          <span style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(-3deg); background:#2C5E3F; color:#FBF2D8; box-shadow:0 4px 10px rgba(36,31,21,.14)">
+            <span style="width:8px; height:8px; border-radius:50%; background:#9FE08A; animation:pulse 1.8s ease-in-out infinite"></span>
+            <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">handpicked for {{ clientName }}</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">ausgewählt für {{ clientName }}</sc-if>
+          </span>
+        </div>
+        <h1 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(54px,7.6vw,108px); line-height:.95; text-transform:uppercase; margin:0 0 22px; display:flex; flex-direction:column; align-items:flex-start">
+          <span>Pick</span>
+          <span style="display:inline-flex; align-items:baseline; gap:.18em">your <span style="position:relative; color:#FBF2D8; background:#2C5E3F; padding:.02em .14em .06em; border-radius:.09em; transform:rotate(1.5deg); box-shadow:0 8px 20px rgba(36,31,21,.18)">vibe<span style="color:#F2BE45">!</span><span style="position:absolute; top:-.14em; left:-.32em; width:.62em; height:.3em; background:rgba(242,190,69,.85); transform:rotate(-38deg); border-radius:2px; box-shadow:0 1px 3px rgba(36,31,21,.12)"></span><span style="position:absolute; bottom:-.12em; right:-.3em; width:.62em; height:.3em; background:rgba(169,207,232,.85); transform:rotate(-42deg); border-radius:2px; box-shadow:0 1px 3px rgba(36,31,21,.12)"></span></span></span>
+        </h1>
+        <p style="font-family:'Gluten',cursive; font-weight:600; font-size:clamp(18px,2vw,23px); margin:0; color:#2C5E3F; transform:rotate(-.5deg)">
+          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">hey {{ contactName }} — tap what you love, skip what you don't ✎</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">hey {{ contactName }} — tipp an, was du liebst, überspring den Rest ✎</sc-if>
+        </p>
+        <p style="margin:14px 0 0; max-width:46ch; font-size:16px; opacity:.85">
+          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Six quick sections, three minutes. Everything saves as you go — and this board is yours: pin your own links, photos and videos at the end.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Sechs kurze Abschnitte, drei Minuten. Alles speichert automatisch — und dieses Board gehört dir: pinne am Ende eigene Links, Fotos und Videos.</sc-if>
+        </p>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:28px">
+          <a href="#styles" style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:17px; letter-spacing:.03em; padding:14px 28px; border-radius:999px; background:#241F15; color:#FFFDF4; transform:rotate(1deg); transition:transform .18s ease, box-shadow .18s ease" style-hover="transform:rotate(0deg) translateY(-2px); box-shadow:0 8px 18px rgba(36,31,21,.2); color:#FFFDF4">
+            <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Start picking</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Los geht's</sc-if>
+            <span style="font-family:'Nunito',sans-serif; font-weight:800">↓</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- right: collage -->
+      <div style="flex:1; min-width:300px; position:relative; height:460px">
+        <!-- polaroid 1 -->
+        <div style="position:absolute; top:6px; left:6%; width:min(230px,52%); background:#FFFDF4; padding:10px 10px 14px; border:1px solid rgba(36,31,21,.08); box-shadow:0 14px 30px rgba(36,31,21,.16); transform:rotate(-6deg); z-index:2">
+          <span style="position:absolute; top:-12px; left:50%; transform:translateX(-50%) rotate(3deg); width:74px; height:24px; background:rgba(242,190,69,.85); border-radius:2px; box-shadow:0 1px 3px rgba(36,31,21,.12); z-index:3"></span>
+          <div style="aspect-ratio:1/1; overflow:hidden; background:#F5F0E2">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="hero-pol1" placeholder="your place" hint-size="100%,100%" style="width:100%; height:100%; display:block"></x-import>
+          </div>
+          <div style="font-family:'Gluten',cursive; font-weight:600; font-size:15px; text-align:center; padding-top:8px; color:#241F15">{{ clientName }} ♥</div>
+        </div>
+        <!-- polaroid 2 -->
+        <div style="position:absolute; top:120px; right:2%; width:min(190px,44%); background:#FFFDF4; padding:9px 9px 12px; border:1px solid rgba(36,31,21,.08); box-shadow:0 14px 30px rgba(36,31,21,.16); transform:rotate(5deg); z-index:3">
+          <span style="position:absolute; top:-11px; left:50%; transform:translateX(-50%) rotate(-4deg); width:64px; height:22px; background:rgba(169,207,232,.85); border-radius:2px; box-shadow:0 1px 3px rgba(36,31,21,.12); z-index:3"></span>
+          <div style="aspect-ratio:1/1; overflow:hidden; background:#F5F0E2">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="hero-pol2" placeholder="the mood" hint-size="100%,100%" style="width:100%; height:100%; display:block"></x-import>
+          </div>
+          <div style="font-family:'Gluten',cursive; font-weight:600; font-size:14px; text-align:center; padding-top:7px; color:#241F15"><sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">the mood</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">die Stimmung</sc-if></div>
+        </div>
+        <!-- paint chip fan -->
+        <div style="position:absolute; bottom:34px; left:2%; z-index:2">
+          <div style="width:120px; height:44px; border-radius:8px; background:#2C5E3F; transform:rotate(-9deg) translate(14px,20px); box-shadow:0 6px 14px rgba(36,31,21,.16)"></div>
+          <div style="width:120px; height:44px; border-radius:8px; background:#EE8B4F; transform:rotate(-3deg) translate(7px,10px); box-shadow:0 6px 14px rgba(36,31,21,.16)"></div>
+          <div style="width:120px; height:44px; border-radius:8px; background:#F2BE45; transform:rotate(4deg); box-shadow:0 6px 14px rgba(36,31,21,.16); display:flex; align-items:center; justify-content:center; font-family:'Fredoka',sans-serif; font-weight:600; font-size:11px; letter-spacing:.1em; text-transform:uppercase">butter 01</div>
+        </div>
+        <!-- handwritten note -->
+        <div style="position:absolute; bottom:60px; right:6%; width:150px; background:#FBEABF; padding:14px 16px; transform:rotate(-4deg); box-shadow:0 10px 22px rgba(36,31,21,.14); border-radius:4px; z-index:1">
+          <span style="position:absolute; top:-10px; right:18px; width:56px; height:20px; background:rgba(196,216,155,.9); border-radius:2px; transform:rotate(5deg); box-shadow:0 1px 3px rgba(36,31,21,.12)"></span>
+          <div style="font-family:'Gluten',cursive; font-weight:600; font-size:16px; line-height:1.3; color:#241F15"><sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">no wrong answers!</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">keine falschen Antworten!</sc-if></div>
+        </div>
+        <!-- round badge -->
+        <div style="position:absolute; top:-6px; right:14%; width:86px; height:86px; border-radius:50%; background:#EE8B4F; display:flex; flex-direction:column; align-items:center; justify-content:center; transform:rotate(9deg); box-shadow:0 10px 22px rgba(36,31,21,.18); z-index:4; text-align:center">
+          <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px; line-height:1">6</span>
+          <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:10px; letter-spacing:.08em; text-transform:uppercase; line-height:1.2"><sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">picks<br>· 3 min ·</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Picks<br>· 3 Min ·</sc-if></span>
+        </div>
+        <!-- mascot peeking -->
+        {{ mascotEl }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Marquee ── -->
+  <div style="margin:54px 0; background:#2C5E3F; transform:rotate(-1.2deg) scale(1.02); overflow:hidden; padding:12px 0">
+    <div style="display:flex; width:max-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; letter-spacing:.14em; text-transform:uppercase; color:#FBF2D8; white-space:nowrap">
+      <span style="padding:0 18px">vibe check</span><span style="color:#F2BE45">✷</span><span style="padding:0 18px">tap what you love</span><span style="color:#F2BE45">✷</span><span style="padding:0 18px">no wrong answers</span><span style="color:#F2BE45">✷</span><span style="padding:0 18px">vibe check</span><span style="color:#F2BE45">✷</span><span style="padding:0 18px">tap what you love</span><span style="color:#F2BE45">✷</span><span style="padding:0 18px">no wrong answers</span><span style="color:#F2BE45">✷</span>
+    </div>
+  </div>
+
+  <!-- ── 1 · Style directions ── -->
+  <section id="styles" data-track="styles" style="max-width:1080px; margin:0 auto; padding:38px 16px; scroll-margin-top:110px">
+    <div style="margin-bottom:30px">
+      <span style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(-2deg); background:#F2BE45; color:#241F15; margin-bottom:16px">01 · look &amp; feel</span>
+      <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(36px,4.6vw,64px); line-height:1; text-transform:uppercase; margin:0">Which <span style="color:#2C5E3F">look</span> feels like you?</h2>
+      <p style="margin:12px 0 0; font-family:'Fredoka',sans-serif; font-weight:500; font-size:15px; color:rgba(36,31,21,.64)">
+        <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Six directions for your website. React to each — your first "love" becomes #1.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Sechs Richtungen für deine Website. Reagiere auf jede — dein erstes „Love" wird #1.</sc-if>
+      </p>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:18px">
+
+      <!-- Style A -->
+      <div style="background:#FBEABF; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:20px; display:flex; flex-direction:column; gap:14px; position:relative; transition:transform .2s ease, box-shadow .2s ease" style-hover="transform:translateY(-4px); box-shadow:0 14px 34px rgba(36,31,21,.09)">
+        <div style="position:absolute; top:-12px; right:20px; width:44px; height:44px; border-radius:50%; background:#2C5E3F; color:#FBF2D8; display:{{ rankA.display }}; place-items:center; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; transform:rotate(8deg); animation:popIn .3s ease; z-index:2">{{ rankA.label }}</div>
+        <div style="border-radius:20px; overflow:hidden; background:#F7F1E0; border:1.5px solid rgba(36,31,21,.12); aspect-ratio:4/3; padding:14px; display:flex; flex-direction:column; gap:10px">
+          <div style="background:#FFFDF4; border-radius:999px; padding:5px 12px; display:flex; align-items:center; gap:6px; width:fit-content"><span style="width:14px; height:14px; border-radius:50%; background:#F2BE45"></span><span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:9px">{{ clientName }}</span></div>
+          <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:26px; line-height:1; text-transform:uppercase">Warm &amp;<br>cozy<span style="color:#EE8B4F">.</span></div>
+          <div style="display:flex; gap:8px; margin-top:auto">
+            <div style="flex:1; height:44px; border-radius:14px; background:#F2BE45"></div>
+            <div style="flex:1; height:44px; border-radius:14px; background:#EE8B4F"></div>
+            <div style="flex:1; height:44px; border-radius:14px; background:#2C5E3F"></div>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px; text-transform:uppercase; margin:0">Warm &amp; Cozy</h3>
+          <p style="margin:4px 0 0; font-size:14px; color:rgba(36,31,21,.7)">
+            <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Cream paper, chunky rounded type, hand-drawn warmth. Feels like fresh cake.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Cremiges Papier, runde Typo, handgemachte Wärme. Wie frischer Kuchen.</sc-if>
+          </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button data-item="styleA" data-val="love" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rA.loveBg }}; color:{{ rA.loveFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">😍 {{ t.love }}</button>
+          <button data-item="styleA" data-val="like" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rA.likeBg }}; color:{{ rA.likeFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙂 {{ t.like }}</button>
+          <button data-item="styleA" data-val="no" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rA.noBg }}; color:{{ rA.noFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙅 {{ t.no }}</button>
+          <button data-item="styleA" onClick="{{ toggleComment }}" style="margin-left:auto; width:36px; height:36px; border-radius:50%; border:1.5px solid rgba(36,31,21,.16); background:#FFFDF4; cursor:pointer; font-size:15px" title="Leave a note">💬</button>
+        </div>
+        <textarea data-item="styleA" onInput="{{ onComment }}" placeholder="{{ t.notePh }}" rows="2" style="display:{{ cA }}; width:100%; box-sizing:border-box; border-radius:16px; border:1.5px solid rgba(36,31,21,.16); padding:10px 14px; font-size:14px; background:#FFFDF4; resize:vertical"></textarea>
+      </div>
+
+      <!-- Style B -->
+      <div style="background:#E3EEF0; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:20px; display:flex; flex-direction:column; gap:14px; position:relative; transition:transform .2s ease, box-shadow .2s ease" style-hover="transform:translateY(-4px); box-shadow:0 14px 34px rgba(36,31,21,.09)">
+        <div style="position:absolute; top:-12px; right:20px; width:44px; height:44px; border-radius:50%; background:#2C5E3F; color:#FBF2D8; display:{{ rankB.display }}; place-items:center; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; transform:rotate(8deg); animation:popIn .3s ease; z-index:2">{{ rankB.label }}</div>
+        <div style="border-radius:20px; overflow:hidden; background:#FFFFFF; border:1.5px solid rgba(36,31,21,.12); aspect-ratio:4/3; padding:14px; display:flex; flex-direction:column; gap:10px">
+          <div style="display:flex; justify-content:space-between; align-items:center"><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:10px; letter-spacing:.1em; text-transform:uppercase">{{ clientName }}</span><span style="width:22px; height:2px; background:#241F15"></span></div>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:24px; line-height:1.1; margin-top:6px">Fresh &amp;<br>minimal</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:auto">
+            <div style="height:40px; border-radius:6px; background:#A9CFE8"></div>
+            <div style="height:40px; border-radius:6px; border:1.5px solid rgba(36,31,21,.2)"></div>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px; text-transform:uppercase; margin:0">Fresh &amp; Minimal</h3>
+          <p style="margin:4px 0 0; font-size:14px; color:rgba(36,31,21,.7)">
+            <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Lots of air, clean grid, calm sky tones. Quiet confidence.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Viel Luft, klares Raster, ruhige Töne. Stille Souveränität.</sc-if>
+          </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button data-item="styleB" data-val="love" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rB.loveBg }}; color:{{ rB.loveFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">😍 {{ t.love }}</button>
+          <button data-item="styleB" data-val="like" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rB.likeBg }}; color:{{ rB.likeFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙂 {{ t.like }}</button>
+          <button data-item="styleB" data-val="no" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rB.noBg }}; color:{{ rB.noFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙅 {{ t.no }}</button>
+          <button data-item="styleB" onClick="{{ toggleComment }}" style="margin-left:auto; width:36px; height:36px; border-radius:50%; border:1.5px solid rgba(36,31,21,.16); background:#FFFDF4; cursor:pointer; font-size:15px" title="Leave a note">💬</button>
+        </div>
+        <textarea data-item="styleB" onInput="{{ onComment }}" placeholder="{{ t.notePh }}" rows="2" style="display:{{ cB }}; width:100%; box-sizing:border-box; border-radius:16px; border:1.5px solid rgba(36,31,21,.16); padding:10px 14px; font-size:14px; background:#FFFDF4; resize:vertical"></textarea>
+      </div>
+
+      <!-- Style C -->
+      <div style="background:#FBDFC9; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:20px; display:flex; flex-direction:column; gap:14px; position:relative; transition:transform .2s ease, box-shadow .2s ease" style-hover="transform:translateY(-4px); box-shadow:0 14px 34px rgba(36,31,21,.09)">
+        <div style="position:absolute; top:-12px; right:20px; width:44px; height:44px; border-radius:50%; background:#2C5E3F; color:#FBF2D8; display:{{ rankC.display }}; place-items:center; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; transform:rotate(8deg); animation:popIn .3s ease; z-index:2">{{ rankC.label }}</div>
+        <div style="border-radius:20px; overflow:hidden; background:#2C5E3F; border:1.5px solid rgba(36,31,21,.12); aspect-ratio:4/3; padding:14px; display:flex; flex-direction:column; gap:8px">
+          <span style="display:inline-flex; width:fit-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:8px; letter-spacing:.1em; text-transform:uppercase; padding:4px 10px; border-radius:999px; background:#F2BE45; color:#241F15; transform:rotate(-2deg)">{{ clientName }}</span>
+          <div style="font-family:'Gluten',cursive; font-weight:700; font-size:27px; line-height:1; color:#EE8B4F; margin-top:2px">BOLD &amp;<br><span style="color:#FBF2D8">PLAYFUL!</span></div>
+          <div style="display:flex; gap:6px; margin-top:auto">
+            <span style="flex:1; height:34px; border-radius:999px; background:#EE8B4F"></span>
+            <span style="width:34px; height:34px; border-radius:50%; background:#F2BE45"></span>
+            <span style="width:34px; height:34px; border-radius:50%; background:#C4D89B"></span>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px; text-transform:uppercase; margin:0">Bold &amp; Playful</h3>
+          <p style="margin:4px 0 0; font-size:14px; color:rgba(36,31,21,.7)">
+            <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Deep pine, loud type, sticker energy. Impossible to scroll past.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Tiefes Grün, laute Typo, Sticker-Energie. Unmöglich zu übersehen.</sc-if>
+          </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button data-item="styleC" data-val="love" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rC.loveBg }}; color:{{ rC.loveFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">😍 {{ t.love }}</button>
+          <button data-item="styleC" data-val="like" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rC.likeBg }}; color:{{ rC.likeFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙂 {{ t.like }}</button>
+          <button data-item="styleC" data-val="no" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rC.noBg }}; color:{{ rC.noFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙅 {{ t.no }}</button>
+          <button data-item="styleC" onClick="{{ toggleComment }}" style="margin-left:auto; width:36px; height:36px; border-radius:50%; border:1.5px solid rgba(36,31,21,.16); background:#FFFDF4; cursor:pointer; font-size:15px" title="Leave a note">💬</button>
+        </div>
+        <textarea data-item="styleC" onInput="{{ onComment }}" placeholder="{{ t.notePh }}" rows="2" style="display:{{ cC }}; width:100%; box-sizing:border-box; border-radius:16px; border:1.5px solid rgba(36,31,21,.16); padding:10px 14px; font-size:14px; background:#FFFDF4; resize:vertical"></textarea>
+      </div>
+
+      <!-- Style D -->
+      <div style="background:#EBF0D6; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:20px; display:flex; flex-direction:column; gap:14px; position:relative; transition:transform .2s ease, box-shadow .2s ease" style-hover="transform:translateY(-4px); box-shadow:0 14px 34px rgba(36,31,21,.09)">
+        <div style="position:absolute; top:-12px; right:20px; width:44px; height:44px; border-radius:50%; background:#2C5E3F; color:#FBF2D8; display:{{ rankD.display }}; place-items:center; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; transform:rotate(8deg); animation:popIn .3s ease; z-index:2">{{ rankD.label }}</div>
+        <div style="border-radius:20px; overflow:hidden; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.12); aspect-ratio:4/3; padding:16px; display:flex; flex-direction:column; gap:10px">
+          <div style="display:flex; justify-content:center"><span style="font-family:'DM Serif Display',serif; font-size:11px; letter-spacing:.28em; text-transform:uppercase">{{ clientName }}</span></div>
+          <div style="height:1px; background:rgba(36,31,21,.25)"></div>
+          <div style="font-family:'DM Serif Display',serif; font-size:26px; line-height:1.1; text-align:center; margin-top:6px">Timeless<br><i>&amp; true</i></div>
+          <div style="display:flex; gap:8px; margin-top:auto; align-items:flex-end">
+            <div style="flex:1; height:38px; border-radius:4px; background:#2C5E3F"></div>
+            <div style="flex:1; height:38px; border-radius:4px; background:#F5F0E2; border:1px solid rgba(36,31,21,.2)"></div>
+            <div style="flex:1; height:38px; border-radius:4px; background:#F2BE45"></div>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px; text-transform:uppercase; margin:0">Classic &amp; Elegant</h3>
+          <p style="margin:4px 0 0; font-size:14px; color:rgba(36,31,21,.7)">
+            <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Serif calm, centered layouts, quiet luxury. Feels established.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Serifen-Ruhe, zentrierte Layouts, leiser Luxus. Wirkt etabliert.</sc-if>
+          </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button data-item="styleD" data-val="love" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rD.loveBg }}; color:{{ rD.loveFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">😍 {{ t.love }}</button>
+          <button data-item="styleD" data-val="like" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rD.likeBg }}; color:{{ rD.likeFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙂 {{ t.like }}</button>
+          <button data-item="styleD" data-val="no" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rD.noBg }}; color:{{ rD.noFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙅 {{ t.no }}</button>
+          <button data-item="styleD" onClick="{{ toggleComment }}" style="margin-left:auto; width:36px; height:36px; border-radius:50%; border:1.5px solid rgba(36,31,21,.16); background:#FFFDF4; cursor:pointer; font-size:15px" title="Leave a note">💬</button>
+        </div>
+        <textarea data-item="styleD" onInput="{{ onComment }}" placeholder="{{ t.notePh }}" rows="2" style="display:{{ cD }}; width:100%; box-sizing:border-box; border-radius:16px; border:1.5px solid rgba(36,31,21,.16); padding:10px 14px; font-size:14px; background:#FFFDF4; resize:vertical"></textarea>
+      </div>
+
+      <!-- Style E -->
+      <div style="background:#E3EEF0; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:20px; display:flex; flex-direction:column; gap:14px; position:relative; transition:transform .2s ease, box-shadow .2s ease" style-hover="transform:translateY(-4px); box-shadow:0 14px 34px rgba(36,31,21,.09)">
+        <div style="position:absolute; top:-12px; right:20px; width:44px; height:44px; border-radius:50%; background:#2C5E3F; color:#FBF2D8; display:{{ rankE.display }}; place-items:center; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; transform:rotate(8deg); animation:popIn .3s ease; z-index:2">{{ rankE.label }}</div>
+        <div style="border-radius:20px; overflow:hidden; background:#241F15; border:1.5px solid rgba(36,31,21,.12); aspect-ratio:4/3; padding:16px; display:flex; flex-direction:column; gap:10px">
+          <div style="display:flex; justify-content:space-between; align-items:center"><span style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#F2BE45">{{ clientName }}</span><span style="width:22px; height:1px; background:rgba(251,242,216,.5)"></span></div>
+          <div style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:28px; line-height:1.05; color:#FBF2D8; margin-top:6px">Dark &amp;<br><i style="color:#F2BE45">moody</i></div>
+          <div style="display:flex; gap:8px; margin-top:auto">
+            <div style="flex:1; height:38px; border-radius:6px; background:rgba(251,242,216,.12); border:1px solid rgba(251,242,216,.25)"></div>
+            <div style="flex:1; height:38px; border-radius:6px; background:#F2BE45"></div>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px; text-transform:uppercase; margin:0">Dark &amp; Moody</h3>
+          <p style="margin:4px 0 0; font-size:14px; color:rgba(36,31,21,.7)">
+            <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Candlelight, deep tones, gold accents. Perfect for evenings.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Kerzenlicht, dunkle Töne, Gold-Akzente. Perfekt für Abende.</sc-if>
+          </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button data-item="styleE" data-val="love" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rE.loveBg }}; color:{{ rE.loveFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">😍 {{ t.love }}</button>
+          <button data-item="styleE" data-val="like" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rE.likeBg }}; color:{{ rE.likeFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙂 {{ t.like }}</button>
+          <button data-item="styleE" data-val="no" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rE.noBg }}; color:{{ rE.noFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙅 {{ t.no }}</button>
+          <button data-item="styleE" onClick="{{ toggleComment }}" style="margin-left:auto; width:36px; height:36px; border-radius:50%; border:1.5px solid rgba(36,31,21,.16); background:#FFFDF4; cursor:pointer; font-size:15px" title="Leave a note">💬</button>
+        </div>
+        <textarea data-item="styleE" onInput="{{ onComment }}" placeholder="{{ t.notePh }}" rows="2" style="display:{{ cE }}; width:100%; box-sizing:border-box; border-radius:16px; border:1.5px solid rgba(36,31,21,.16); padding:10px 14px; font-size:14px; background:#FFFDF4; resize:vertical"></textarea>
+      </div>
+
+      <!-- Style F -->
+      <div style="background:#FBEABF; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:20px; display:flex; flex-direction:column; gap:14px; position:relative; transition:transform .2s ease, box-shadow .2s ease" style-hover="transform:translateY(-4px); box-shadow:0 14px 34px rgba(36,31,21,.09)">
+        <div style="position:absolute; top:-12px; right:20px; width:44px; height:44px; border-radius:50%; background:#2C5E3F; color:#FBF2D8; display:{{ rankF.display }}; place-items:center; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; transform:rotate(8deg); animation:popIn .3s ease; z-index:2">{{ rankF.label }}</div>
+        <div style="border-radius:20px; overflow:hidden; background:#FBF2D8; border:1.5px solid rgba(36,31,21,.12); aspect-ratio:4/3; padding:16px; display:flex; flex-direction:column; gap:8px; align-items:center; text-align:center">
+          <span style="font-family:'Space Mono',monospace; font-weight:700; font-size:9px; letter-spacing:.2em; text-transform:uppercase; border:1.5px solid #241F15; border-radius:999px; padding:3px 10px">est. {{ clientName }}</span>
+          <div style="font-family:'Archivo Black',sans-serif; font-size:24px; line-height:1.02; color:#EE8B4F; text-transform:uppercase; margin-top:4px">Retro<br><span style="color:#2C5E3F">diner</span></div>
+          <div style="display:flex; gap:6px; margin-top:auto; align-items:center">
+            <span style="width:30px; height:30px; border-radius:50%; background:#EE8B4F; border:2px solid #241F15"></span>
+            <span style="width:52px; height:22px; border-radius:999px; background:#F2BE45; border:2px solid #241F15"></span>
+            <span style="width:30px; height:30px; border-radius:50%; background:#C4D89B; border:2px solid #241F15"></span>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px; text-transform:uppercase; margin:0">Retro &amp; Nostalgic</h3>
+          <p style="margin:4px 0 0; font-size:14px; color:rgba(36,31,21,.7)">
+            <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Chunky type, badges, outlines — like a diner sign from 1972.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Fette Typo, Badges, Outlines — wie ein Diner-Schild von 1972.</sc-if>
+          </p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button data-item="styleF" data-val="love" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rF.loveBg }}; color:{{ rF.loveFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">😍 {{ t.love }}</button>
+          <button data-item="styleF" data-val="like" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rF.likeBg }}; color:{{ rF.likeFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙂 {{ t.like }}</button>
+          <button data-item="styleF" data-val="no" onClick="{{ onReact }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ rF.noBg }}; color:{{ rF.noFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">🙅 {{ t.no }}</button>
+          <button data-item="styleF" onClick="{{ toggleComment }}" style="margin-left:auto; width:36px; height:36px; border-radius:50%; border:1.5px solid rgba(36,31,21,.16); background:#FFFDF4; cursor:pointer; font-size:15px" title="Leave a note">💬</button>
+        </div>
+        <textarea data-item="styleF" onInput="{{ onComment }}" placeholder="{{ t.notePh }}" rows="2" style="display:{{ cF }}; width:100%; box-sizing:border-box; border-radius:16px; border:1.5px solid rgba(36,31,21,.16); padding:10px 14px; font-size:14px; background:#FFFDF4; resize:vertical"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2 · Color palettes ── -->
+  <section id="colors" data-track="colors" style="max-width:1080px; margin:0 auto; padding:38px 16px; scroll-margin-top:110px">
+    <div style="margin-bottom:30px">
+      <span style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(1.5deg); background:#A9CFE8; color:#241F15; margin-bottom:16px">02 · colors</span>
+      <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(36px,4.6vw,64px); line-height:1; text-transform:uppercase; margin:0">Pick a <span style="color:#2C5E3F">palette</span></h2>
+      <p style="margin:12px 0 0; font-family:'Fredoka',sans-serif; font-weight:500; font-size:15px; color:rgba(36,31,21,.64)">
+        <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Tap the one that feels most like your place.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Tipp die an, die sich am meisten nach deinem Laden anfühlt.</sc-if>
+      </p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px">
+      <sc-for list="{{ palettes }}" as="pal" hint-placeholder-count="4">
+        <button data-item="{{ pal.id }}" onClick="{{ pickPalette }}" style="text-align:left; cursor:pointer; background:#FFFDF4; border-radius:30px; padding:22px; display:flex; flex-direction:column; gap:14px; border:{{ pal.border }}; box-shadow:{{ pal.shadow }}; transition:transform .2s ease" style-hover="transform:translateY(-4px)">
+          <div style="display:flex">
+            <span style="width:44px; height:44px; border-radius:50%; background:{{ pal.s1 }}; border:2px solid #FFFDF4"></span>
+            <span style="width:44px; height:44px; border-radius:50%; background:{{ pal.s2 }}; border:2px solid #FFFDF4; margin-left:-12px"></span>
+            <span style="width:44px; height:44px; border-radius:50%; background:{{ pal.s3 }}; border:2px solid #FFFDF4; margin-left:-12px"></span>
+            <span style="width:44px; height:44px; border-radius:50%; background:{{ pal.s4 }}; border:2px solid #FFFDF4; margin-left:-12px"></span>
+          </div>
+          <div>
+            <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:19px; text-transform:uppercase">{{ pal.name }}</div>
+            <div style="font-size:13.5px; color:rgba(36,31,21,.64); margin-top:2px">{{ pal.mood }}</div>
+          </div>
+          <span style="display:{{ pal.pickDisplay }}; width:fit-content; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:#2C5E3F; color:#FBF2D8; transform:rotate(-2deg); animation:popIn .3s ease">✓ {{ t.picked }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ── 3 · Typography ── -->
+  <section id="fonts" data-track="fonts" style="max-width:1080px; margin:0 auto; padding:38px 16px; scroll-margin-top:110px">
+    <div style="margin-bottom:30px">
+      <span style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(-2deg); background:#EE8B4F; color:#241F15; margin-bottom:16px">03 · fonts</span>
+      <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(36px,4.6vw,64px); line-height:1; text-transform:uppercase; margin:0">How should it <span style="color:#2C5E3F">talk?</span></h2>
+      <p style="margin:12px 0 0; font-family:'Fredoka',sans-serif; font-weight:500; font-size:15px; color:rgba(36,31,21,.64)">
+        <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Your name, seven voices. Pick one.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Dein Name, sieben Stimmen. Wähl eine.</sc-if>
+      </p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:16px">
+      <button data-item="rounded" onClick="{{ pickFont }}" style="text-align:left; cursor:pointer; background:#FBEABF; border-radius:30px; padding:26px; display:flex; flex-direction:column; gap:10px; border:{{ fRounded.border }}; box-shadow:{{ fRounded.shadow }}; transition:transform .2s ease" style-hover="transform:translateY(-4px)">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:rgba(36,31,21,.64)">Friendly &amp; round</span>
+        <span style="font-family:'Baloo 2',cursive; font-weight:800; font-size:clamp(34px,3.6vw,46px); line-height:1.05">{{ clientName }}</span>
+        <span style="font-size:14.5px; color:rgba(36,31,21,.75)">Fresh coffee, warm hearts — open every day from 8.</span>
+        <span style="display:{{ fRounded.pickDisplay }}; width:fit-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:#2C5E3F; color:#FBF2D8; transform:rotate(-2deg); animation:popIn .3s ease">✓ {{ t.picked }}</span>
+      </button>
+      <button data-item="elegant" onClick="{{ pickFont }}" style="text-align:left; cursor:pointer; background:#E3EEF0; border-radius:30px; padding:26px; display:flex; flex-direction:column; gap:10px; border:{{ fElegant.border }}; box-shadow:{{ fElegant.shadow }}; transition:transform .2s ease" style-hover="transform:translateY(-4px)">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:rgba(36,31,21,.64)">Elegant &amp; classic</span>
+        <span style="font-family:'DM Serif Display',serif; font-size:clamp(34px,3.6vw,46px); line-height:1.05">{{ clientName }}</span>
+        <span style="font-size:14.5px; color:rgba(36,31,21,.75)">Fresh coffee, warm hearts — open every day from 8.</span>
+        <span style="display:{{ fElegant.pickDisplay }}; width:fit-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:#2C5E3F; color:#FBF2D8; transform:rotate(-2deg); animation:popIn .3s ease">✓ {{ t.picked }}</span>
+      </button>
+      <button data-item="handmade" onClick="{{ pickFont }}" style="text-align:left; cursor:pointer; background:#FBDFC9; border-radius:30px; padding:26px; display:flex; flex-direction:column; gap:10px; border:{{ fHandmade.border }}; box-shadow:{{ fHandmade.shadow }}; transition:transform .2s ease" style-hover="transform:translateY(-4px)">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:rgba(36,31,21,.64)">Handmade &amp; fun</span>
+        <span style="font-family:'Gluten',cursive; font-weight:700; font-size:clamp(32px,3.4vw,42px); line-height:1.05">{{ clientName }}</span>
+        <span style="font-size:14.5px; color:rgba(36,31,21,.75)">Fresh coffee, warm hearts — open every day from 8.</span>
+        <span style="display:{{ fHandmade.pickDisplay }}; width:fit-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:#2C5E3F; color:#FBF2D8; transform:rotate(-2deg); animation:popIn .3s ease">✓ {{ t.picked }}</span>
+      </button>
+      <button data-item="modern" onClick="{{ pickFont }}" style="text-align:left; cursor:pointer; background:#EBF0D6; border-radius:30px; padding:26px; display:flex; flex-direction:column; gap:10px; border:{{ fModern.border }}; box-shadow:{{ fModern.shadow }}; transition:transform .2s ease" style-hover="transform:translateY(-4px)">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:rgba(36,31,21,.64)">Modern &amp; crisp</span>
+        <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(34px,3.6vw,46px); line-height:1.05">{{ clientName }}</span>
+        <span style="font-size:14.5px; color:rgba(36,31,21,.75)">Fresh coffee, warm hearts — open every day from 8.</span>
+        <span style="display:{{ fModern.pickDisplay }}; width:fit-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:#2C5E3F; color:#FBF2D8; transform:rotate(-2deg); animation:popIn .3s ease">✓ {{ t.picked }}</span>
+      </button>
+      <button data-item="bold" onClick="{{ pickFont }}" style="text-align:left; cursor:pointer; background:#FBEABF; border-radius:30px; padding:26px; display:flex; flex-direction:column; gap:10px; border:{{ fBold.border }}; box-shadow:{{ fBold.shadow }}; transition:transform .2s ease" style-hover="transform:translateY(-4px)">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:rgba(36,31,21,.64)">Bold &amp; loud</span>
+        <span style="font-family:'Archivo Black',sans-serif; font-size:clamp(28px,3vw,38px); line-height:1.05; text-transform:uppercase">{{ clientName }}</span>
+        <span style="font-size:14.5px; color:rgba(36,31,21,.75)">Fresh coffee, warm hearts — open every day from 8.</span>
+        <span style="display:{{ fBold.pickDisplay }}; width:fit-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:#2C5E3F; color:#FBF2D8; transform:rotate(-2deg); animation:popIn .3s ease">✓ {{ t.picked }}</span>
+      </button>
+      <button data-item="chic" onClick="{{ pickFont }}" style="text-align:left; cursor:pointer; background:#E3EEF0; border-radius:30px; padding:26px; display:flex; flex-direction:column; gap:10px; border:{{ fChic.border }}; box-shadow:{{ fChic.shadow }}; transition:transform .2s ease" style-hover="transform:translateY(-4px)">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:rgba(36,31,21,.64)">Boutique &amp; chic</span>
+        <span style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(36px,3.8vw,48px); line-height:1.02; letter-spacing:.02em">{{ clientName }}</span>
+        <span style="font-size:14.5px; color:rgba(36,31,21,.75)">Fresh coffee, warm hearts — open every day from 8.</span>
+        <span style="display:{{ fChic.pickDisplay }}; width:fit-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:#2C5E3F; color:#FBF2D8; transform:rotate(-2deg); animation:popIn .3s ease">✓ {{ t.picked }}</span>
+      </button>
+      <button data-item="mono" onClick="{{ pickFont }}" style="text-align:left; cursor:pointer; background:#EBF0D6; border-radius:30px; padding:26px; display:flex; flex-direction:column; gap:10px; border:{{ fMono.border }}; box-shadow:{{ fMono.shadow }}; transition:transform .2s ease" style-hover="transform:translateY(-4px)">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:rgba(36,31,21,.64)">Indie &amp; mono</span>
+        <span style="font-family:'Space Mono',monospace; font-weight:700; font-size:clamp(26px,2.8vw,36px); line-height:1.1">{{ clientName }}</span>
+        <span style="font-size:14.5px; color:rgba(36,31,21,.75)">Fresh coffee, warm hearts — open every day from 8.</span>
+        <span style="display:{{ fMono.pickDisplay }}; width:fit-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:#2C5E3F; color:#FBF2D8; transform:rotate(-2deg); animation:popIn .3s ease">✓ {{ t.picked }}</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── 4 · Reference sites ── -->
+  <section id="refs" data-track="refs" style="max-width:1080px; margin:0 auto; padding:38px 16px; scroll-margin-top:110px">
+    <div style="margin-bottom:30px">
+      <span style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(1.5deg); background:#C4D89B; color:#241F15; margin-bottom:16px">04 · references</span>
+      <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(36px,4.6vw,64px); line-height:1; text-transform:uppercase; margin:0">Sites I think <span style="color:#2C5E3F">you'll like</span></h2>
+      <p style="margin:12px 0 0; font-family:'Fredoka',sans-serif; font-weight:500; font-size:15px; color:rgba(36,31,21,.64)">
+        <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Open each one, then tell me what you like (or don't).</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Öffne jede Seite und sag mir, was dir gefällt (oder nicht).</sc-if>
+      </p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:16px">
+      <sc-for list="{{ refs }}" as="ref" hint-placeholder-count="3">
+        <div style="background:{{ ref.bg }}; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:26px 28px; display:grid; grid-template-columns:52px 1fr auto; gap:20px; align-items:start; transition:transform .2s ease, box-shadow .2s ease" style-hover="transform:translateY(-3px); box-shadow:0 14px 34px rgba(36,31,21,.09)">
+          <div style="width:52px; height:52px; border-radius:50%; background:#2C5E3F; color:#FBF2D8; display:grid; place-items:center; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; transform:rotate(-6deg)">{{ ref.num }}</div>
+          <div style="display:flex; flex-direction:column; gap:8px">
+            <div>
+              <h3 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px; text-transform:uppercase; margin:0; line-height:1.1">{{ ref.name }}</h3>
+              <span style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13.5px; color:rgba(36,31,21,.64)">{{ ref.url }} · {{ ref.why }}</span>
+            </div>
+            <textarea data-item="{{ ref.id }}" onInput="{{ onComment }}" placeholder="{{ t.refPh }}" rows="2" style="width:100%; box-sizing:border-box; border-radius:16px; border:1.5px solid rgba(36,31,21,.16); padding:10px 14px; font-size:14px; background:#FFFDF4; resize:vertical"></textarea>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end">
+            <a href="{{ ref.href }}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; padding:7px 16px; border-radius:999px; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.16); transition:transform .18s ease" style-hover="transform:translateY(-2px); color:#241F15">{{ t.visit }} <span style="font-weight:800">↗</span></a>
+            <button data-item="{{ ref.id }}" onClick="{{ toggleRefLike }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; padding:7px 16px; border-radius:999px; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ ref.likeBg }}; color:{{ ref.likeFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">❤ {{ t.likeThis }}</button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ── 5 · Imagery mood ── -->
+  <section id="photos" data-track="photos" style="max-width:1080px; margin:0 auto; padding:38px 16px 60px; scroll-margin-top:110px">
+    <div style="margin-bottom:30px">
+      <span style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(-2deg); background:#2C5E3F; color:#FBF2D8; margin-bottom:16px">05 · photo mood</span>
+      <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(36px,4.6vw,64px); line-height:1; text-transform:uppercase; margin:0">Heart the <span style="color:#2C5E3F">photos</span> you feel</h2>
+      <p style="margin:12px 0 0; font-family:'Fredoka',sans-serif; font-weight:500; font-size:15px; color:rgba(36,31,21,.64)">
+        <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Tap the ♥ on every mood that fits. As many as you want.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Tipp das ♥ bei jeder Stimmung, die passt. So viele du willst.</sc-if>
+      </p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px">
+      <sc-for list="{{ photos }}" as="ph" hint-placeholder-count="6">
+        <div style="position:relative; border-radius:24px; overflow:hidden; border:1.5px solid rgba(36,31,21,.12); background:#FFFDF4">
+          <div style="aspect-ratio:1/1">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ ph.slotId }}" placeholder="drop a photo" hint-size="100%,100%" style="width:100%; height:100%; display:block"></x-import>
+          </div>
+          <button data-item="{{ ph.id }}" onClick="{{ toggleHeart }}" style="position:absolute; top:12px; right:12px; width:44px; height:44px; border-radius:50%; border:1.5px solid rgba(36,31,21,.14); cursor:pointer; font-size:19px; background:{{ ph.heartBg }}; color:{{ ph.heartFg }}; box-shadow:0 6px 16px rgba(36,31,21,.16); transition:transform .15s ease" style-hover="transform:scale(1.1)">♥</button>
+          <div style="position:absolute; left:12px; bottom:12px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.06em; text-transform:uppercase; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.12); border-radius:999px; padding:5px 12px">{{ ph.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ── 6 · Extras (custom links / photos / videos) ── -->
+  <section id="extras" data-track="extras" style="max-width:1080px; margin:0 auto; padding:38px 16px 60px; scroll-margin-top:110px">
+    <div style="margin-bottom:30px">
+      <span style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(1.5deg); background:#F2BE45; color:#241F15; margin-bottom:16px">06 · extras</span>
+      <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(36px,4.6vw,64px); line-height:1; text-transform:uppercase; margin:0">Anything <span style="color:#2C5E3F">else?</span></h2>
+      <p style="margin:12px 0 0; font-family:'Fredoka',sans-serif; font-weight:500; font-size:15px; color:rgba(36,31,21,.64)">
+        <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Found something you love? Drop in a link, a photo, or a video — it lands straight on this board.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Etwas gefunden, das du liebst? Füge einen Link, ein Foto oder ein Video hinzu — es landet direkt auf diesem Board.</sc-if>
+      </p>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px">
+      <!-- existing custom items -->
+      <sc-for list="{{ customItems }}" as="ci" hint-placeholder-count="0">
+        <div style="background:{{ ci.bg }}; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:18px; display:flex; flex-direction:column; gap:12px; position:relative; transition:transform .2s ease, box-shadow .2s ease" style-hover="transform:translateY(-3px); box-shadow:0 14px 34px rgba(36,31,21,.09)">
+          <button data-id="{{ ci.id }}" onClick="{{ removeCustom }}" title="Remove" style="position:absolute; top:-10px; right:16px; width:30px; height:30px; border-radius:50%; border:1.5px solid rgba(36,31,21,.16); background:#FFFDF4; cursor:pointer; font-size:13px; z-index:2">✕</button>
+          <!-- link -->
+          <div style="display:{{ ci.linkDisplay }}; flex-direction:column; gap:10px">
+            <div style="display:flex; align-items:center; gap:12px">
+              <span style="width:44px; height:44px; border-radius:50%; background:#2C5E3F; color:#FBF2D8; display:grid; place-items:center; font-size:18px; transform:rotate(-6deg); flex:none">🔗</span>
+              <div style="min-width:0">
+                <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:18px; text-transform:uppercase; line-height:1.15; overflow-wrap:anywhere">{{ ci.title }}</div>
+                <div style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:12.5px; color:rgba(36,31,21,.6); overflow-wrap:anywhere">{{ ci.host }}</div>
+              </div>
+            </div>
+            <a href="{{ ci.url }}" target="_blank" style="display:inline-flex; width:fit-content; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; padding:7px 16px; border-radius:999px; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.16); transition:transform .18s ease" style-hover="transform:translateY(-2px); color:#241F15">{{ t.visit }} <span style="font-weight:800">↗</span></a>
+          </div>
+          <!-- video -->
+          <div style="display:{{ ci.videoDisplay }}; flex-direction:column; gap:10px">
+            <div style="border-radius:18px; overflow:hidden; border:1.5px solid rgba(36,31,21,.12); aspect-ratio:16/9; background:#241F15">
+              <sc-if value="{{ ci.hasVideoFile }}" hint-placeholder-val="{{ false }}">{{ ci.mediaEl }}</sc-if>
+              <sc-if value="{{ ci.hasEmbed }}" hint-placeholder-val="{{ false }}"><iframe src="{{ ci.embed }}" title="{{ ci.title }}" style="width:100%; height:100%; border:0" allowfullscreen="allowfullscreen"></iframe></sc-if>
+            </div>
+            <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; text-transform:uppercase">{{ ci.title }}</div>
+          </div>
+          <!-- photo -->
+          <div style="display:{{ ci.photoDisplay }}; flex-direction:column; gap:10px">
+            <div style="border-radius:18px; overflow:hidden; border:1.5px solid rgba(36,31,21,.12); aspect-ratio:4/3; background:#F5F0E2">
+              <sc-if value="{{ ci.hasDataUrl }}" hint-placeholder-val="{{ false }}">{{ ci.mediaEl }}</sc-if>
+              <div style="display:{{ ci.slotDisplay }}; width:100%; height:100%">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ ci.slotId }}" placeholder="drop a photo" hint-size="100%,100%" style="width:100%; height:100%; display:block"></x-import>
+              </div>
+            </div>
+            <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; text-transform:uppercase">{{ ci.title }}</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; margin-top:auto">
+            <button data-id="{{ ci.id }}" onClick="{{ toggleCustomHeart }}" style="display:inline-flex; align-items:center; gap:6px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; padding:7px 16px; border-radius:999px; white-space:nowrap; cursor:pointer; border:1.5px solid rgba(36,31,21,.16); background:{{ ci.heartBg }}; color:{{ ci.heartFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">♥ {{ t.likeThis }}</button>
+            <span style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:12px; color:rgba(36,31,21,.5); margin-left:auto">{{ ci.byLabel }}</span>
+          </div>
+        </div>
+      </sc-for>
+
+      <!-- add composer -->
+      <div style="background:#FFFDF4; border:2px dashed rgba(36,31,21,.25); border-radius:30px; padding:22px; display:flex; flex-direction:column; gap:14px">
+        <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:18px; text-transform:uppercase">+ <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Add your own</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Selbst hinzufügen</sc-if></div>
+        <div style="display:flex; gap:6px; background:#F5F0E2; border-radius:999px; padding:4px; width:fit-content">
+          <button data-kind="link" onClick="{{ setAddKind }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; border:0; cursor:pointer; padding:7px 15px; border-radius:999px; background:{{ kindLinkBg }}; color:{{ kindLinkFg }}">🔗 Link</button>
+          <button data-kind="photo" onClick="{{ setAddKind }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; border:0; cursor:pointer; padding:7px 15px; border-radius:999px; background:{{ kindPhotoBg }}; color:{{ kindPhotoFg }}">📷 <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Photo</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Foto</sc-if></button>
+          <button data-kind="video" onClick="{{ setAddKind }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; border:0; cursor:pointer; padding:7px 15px; border-radius:999px; background:{{ kindVideoBg }}; color:{{ kindVideoFg }}">▶ Video</button>
+        </div>
+        <input onInput="{{ onAddTitle }}" value="{{ addTitle }}" placeholder="{{ t.addTitlePh }}" style="width:100%; box-sizing:border-box; border-radius:999px; border:1.5px solid rgba(36,31,21,.16); padding:11px 18px; font-size:14px; font-family:'Nunito',sans-serif; background:#F5F0E2">
+        <input onInput="{{ onAddUrl }}" value="{{ addUrl }}" placeholder="{{ addUrlPh }}" style="display:{{ addUrlDisplay }}; width:100%; box-sizing:border-box; border-radius:999px; border:1.5px solid rgba(36,31,21,.16); padding:11px 18px; font-size:14px; font-family:'Nunito',sans-serif; background:#F5F0E2">
+        <!-- photo drop zone / file picker -->
+        <div onClick="{{ browseFile }}" onDrop="{{ onFileDrop }}" onDragOver="{{ onFileDragOver }}" onDragLeave="{{ onFileDragLeave }}" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; border-radius:18px; border:2px dashed {{ dropZoneBorder }}; background:{{ dropZoneBg }}; padding:22px 16px; text-align:center; cursor:pointer; transition:background .15s ease">
+          <span style="font-size:26px">📷 ▶ 🔗</span>
+          <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px">{{ dropZoneLabel }}</span>
+          <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12.5px; padding:6px 16px; border-radius:999px; background:#2C5E3F; color:#FFFDF4">
+            <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Browse files</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Dateien durchsuchen</sc-if>
+          </span>
+          <input type="file" accept="image/*,video/*" onChange="{{ onFilePick }}" ref="{{ fileInputRef }}" style="display:none">
+        </div>
+        <button onClick="{{ addCustom }}" style="width:fit-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:14.5px; padding:11px 24px; border-radius:999px; border:0; cursor:pointer; background:#2C5E3F; color:#FFFDF4; transition:transform .18s ease" style-hover="transform:translateY(-2px)">
+          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Add to board</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Zum Board</sc-if> ✓
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Sticky progress / submit bar ── -->
+  <div style="position:fixed; bottom:16px; left:0; right:0; z-index:60; display:flex; justify-content:center; padding:0 16px; pointer-events:none">
+    <div style="pointer-events:auto; display:flex; align-items:center; gap:16px; background:#241F15; color:#FBF2D8; border-radius:999px; padding:10px 12px 10px 22px; box-shadow:0 14px 34px rgba(36,31,21,.28)">
+      <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px">{{ progressText }}</span>
+      <div style="display:flex; gap:5px">
+        <span style="width:9px; height:9px; border-radius:50%; background:{{ dot1 }}"></span>
+        <span style="width:9px; height:9px; border-radius:50%; background:{{ dot2 }}"></span>
+        <span style="width:9px; height:9px; border-radius:50%; background:{{ dot3 }}"></span>
+        <span style="width:9px; height:9px; border-radius:50%; background:{{ dot4 }}"></span>
+        <span style="width:9px; height:9px; border-radius:50%; background:{{ dot5 }}"></span>
+      </div>
+      <button onClick="{{ submit }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; letter-spacing:.03em; padding:11px 22px; border-radius:999px; border:0; cursor:pointer; background:#F2BE45; color:#241F15; transition:transform .18s ease" style-hover="transform:translateY(-2px)">{{ t.send }} ✓</button>
+    </div>
+  </div>
+
+  <!-- ── Submitted overlay ── -->
+  <div style="position:fixed; inset:0; z-index:100; display:{{ doneDisplay }}; align-items:center; justify-content:center; background:rgba(36,31,21,.45); padding:20px">
+    <div style="background:#F5F0E2; border-radius:40px; padding:50px 46px; max-width:520px; text-align:center; position:relative; animation:popIn .35s ease">
+      <img src="assets/mascots/cheers.png?v=hd" alt="" style="width:150px; margin:-100px auto 6px; display:block">
+      <span style="display:inline-flex; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; background:#2C5E3F; color:#FBF2D8; transform:rotate(-2deg)">
+        <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">sent to Mahyar</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">an Mahyar gesendet</sc-if>
+      </span>
+      <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(38px,5vw,54px); line-height:1; text-transform:uppercase; margin:16px 0 0">Danke<span style="color:#EE8B4F">!</span></h2>
+      <p style="margin:14px auto 0; max-width:36ch; font-size:15.5px; opacity:.85">
+        <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Your picks are in. I'll turn them into your website — you'll get an update in this same link.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Deine Auswahl ist da. Ich mache daraus deine Website — Updates bekommst du unter demselben Link.</sc-if>
+      </p>
+      <div style="display:flex; gap:10px; justify-content:center; margin-top:26px; flex-wrap:wrap">
+        <a href="{{ hubLink }}" style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; padding:12px 24px; border-radius:999px; background:#2C5E3F; color:#FFFDF4" style-hover="color:#FFFDF4">
+          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Peek at your project hub</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Zum Projekt-Hub</sc-if> <span style="font-weight:800">→</span>
+        </a>
+        <button onClick="{{ closeDone }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; padding:12px 24px; border-radius:999px; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.16); cursor:pointer">
+          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Keep editing</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Weiter auswählen</sc-if>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <div style="max-width:1080px; margin:0 auto; padding:10px 16px 110px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px">
+    <span style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:rgba(36,31,21,.55)">gubli · gastronomy &amp; retail digital services · Berlin</span>
+    <span style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:rgba(36,31,21,.35)">made with ♥ by Mahyar</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;clientName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Luna Café&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Client&quot;},&quot;contactName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Selin&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Client&quot;}}">
+class Component extends DCLogic {
+  _params = new URLSearchParams(window.location.search);
+  _k(name) {
+    const slug = (this._params.get('c') || this._params.get('name') || 'luna').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    return 'gubli_' + name + '_' + slug;
+  }
+
+  state = {
+    lang: this._params.get('lang') === 'de' ? 'de' : 'en',
+    reactions: {},        // styleA/B/C -> love|like|no
+    loveOrder: [],        // style ids in order first loved
+    palette: null,
+    font: null,
+    refLikes: {},
+    comments: {},
+    openComments: {},
+    photoLoves: {},
+    done: false,
+    custom: [],
+    customHearts: {},
+    addKind: 'link',
+    addTitle: '',
+    addUrl: '',
+    dragOver: false,
+  };
+
+  _fileInput = React.createRef();
+
+  _addItem(item) {
+    this.setState(st => {
+      const custom = st.custom.concat(item);
+      try { localStorage.setItem(this._k('custom'), JSON.stringify({ items: custom, hearts: st.customHearts })); } catch (e) {
+        alert('This file is too large to keep on the board — try a smaller one.');
+        return { dragOver: false };
+      }
+      return { custom, addTitle: '', dragOver: false };
+    });
+  }
+
+  async _handleFile(file) {
+    if (!file) return;
+    const title = this.state.addTitle.trim() || file.name.replace(/\.[^.]+$/, '');
+    if (file.type.startsWith('image/')) {
+      // downscale to max 1200px webp so it fits localStorage
+      const bitmap = await createImageBitmap(file);
+      const scale = Math.min(1, 1200 / Math.max(bitmap.width, bitmap.height));
+      const w = Math.max(1, Math.round(bitmap.width * scale));
+      const h = Math.max(1, Math.round(bitmap.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/webp', 0.8);
+      this._addItem({ id: 'c' + Date.now(), kind: 'photo', title, url: '', dataUrl, by: 'client' });
+    } else if (file.type.startsWith('video/')) {
+      if (file.size > 4 * 1024 * 1024) {
+        alert('Video is too large for the board (max ~4 MB in this prototype) — paste a YouTube/Vimeo link instead.');
+        this.setState({ dragOver: false });
+        return;
+      }
+      const dataUrl = await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      });
+      this._addItem({ id: 'c' + Date.now(), kind: 'video', title, url: '', dataUrl, by: 'client' });
+    }
+  }
+
+  _handleDroppedText(text) {
+    const url = (text || '').trim();
+    if (!/^https?:\/\//i.test(url)) return false;
+    const isVideo = /youtu\.be\/|youtube\.com\/|vimeo\.com\//i.test(url);
+    let title = this.state.addTitle.trim();
+    if (!title) { try { title = new URL(url).hostname.replace('www.', ''); } catch (e) { title = url; } }
+    this._addItem({ id: 'c' + Date.now(), kind: isVideo ? 'video' : 'link', title, url, by: 'client' });
+    return true;
+  }
+
+  componentDidMount() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(this._k('custom')) || 'null');
+      if (saved) this.setState({ custom: saved.items || [], customHearts: saved.hearts || {} });
+    } catch (e) {}
+    // invisible engagement tracking → localStorage (read by Admin Dashboard)
+    try {
+      const vKey = this._k('visits');
+      const v = JSON.parse(localStorage.getItem(vKey) || '{"count":0}');
+      v.count += 1; v.last = Date.now();
+      localStorage.setItem(vKey, JSON.stringify(v));
+    } catch (e) {}
+
+    this._clicks = [];
+    this._onClick = (e) => {
+      const de = document.documentElement;
+      this._clicks.push([+(e.pageX / de.scrollWidth).toFixed(3), +(e.pageY / de.scrollHeight).toFixed(3)]);
+      if (this._clicks.length > 200) this._clicks.shift();
+      this._saveTrack();
+    };
+    document.addEventListener('click', this._onClick, true);
+
+    this._dwell = JSON.parse(localStorage.getItem(this._k('dwell')) || '{}');
+    this._visible = new Set();
+    this._io = new IntersectionObserver((ents) => {
+      ents.forEach(en => {
+        const id = en.target.getAttribute('data-track');
+        if (en.intersectionRatio >= 0.4) this._visible.add(id); else this._visible.delete(id);
+      });
+    }, { threshold: [0, 0.4, 1] });
+    document.querySelectorAll('[data-track]').forEach(el => this._io.observe(el));
+    this._tick = setInterval(() => {
+      if (document.hidden) return;
+      this._visible.forEach(id => { this._dwell[id] = (this._dwell[id] || 0) + 1; });
+      localStorage.setItem(this._k('dwell'), JSON.stringify(this._dwell));
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this._onClick, true);
+    clearInterval(this._tick);
+    if (this._io) this._io.disconnect();
+  }
+
+  _saveTrack() {
+    try {
+      const key = this._k('heat');
+      const prev = JSON.parse(localStorage.getItem(key) || '[]');
+      localStorage.setItem(key, JSON.stringify(prev.concat(this._clicks.splice(0)).slice(-400)));
+    } catch (e) {}
+  }
+
+  _saveResponses(next) {
+    try { localStorage.setItem(this._k('resp'), JSON.stringify(next)); } catch (e) {}
+  }
+
+  renderVals() {
+    const s = this.state;
+    const en = s.lang === 'en';
+    const t = en
+      ? { love: 'Love it', like: 'Like it', no: 'Not for me', picked: 'your pick', visit: 'Visit', likeThis: 'I like this one', send: 'Send to Mahyar', notePh: 'Tell me more… (optional)', refPh: 'What do you like about it?' }
+      : { love: 'Liebe es', like: 'Gefällt mir', no: 'Nicht meins', picked: 'deine Wahl', visit: 'Ansehen', likeThis: 'Das gefällt mir', send: 'An Mahyar senden', notePh: 'Erzähl mir mehr… (optional)', refPh: 'Was gefällt dir daran?' };
+
+    const reactStyles = (id) => {
+      const r = s.reactions[id];
+      const sel = { bg: '#2C5E3F', fg: '#FBF2D8' };
+      const idle = { bg: '#FFFDF4', fg: '#241F15' };
+      return {
+        loveBg: r === 'love' ? sel.bg : idle.bg, loveFg: r === 'love' ? sel.fg : idle.fg,
+        likeBg: r === 'like' ? sel.bg : idle.bg, likeFg: r === 'like' ? sel.fg : idle.fg,
+        noBg: r === 'no' ? sel.bg : idle.bg, noFg: r === 'no' ? sel.fg : idle.fg,
+      };
+    };
+    const rank = (id) => {
+      const i = s.loveOrder.indexOf(id);
+      return i < 0 ? { display: 'none', label: '' } : { display: 'grid', label: '#' + (i + 1) };
+    };
+
+    const persist = () => {
+      this._saveResponses({
+        reactions: this.state.reactions, loveOrder: this.state.loveOrder,
+        palette: this.state.palette, font: this.state.font,
+        refLikes: this.state.refLikes, comments: this.state.comments,
+        photoLoves: this.state.photoLoves, ts: Date.now(),
+      });
+    };
+
+    const paletteData = [
+      { id: 'butter', name: 'Butter Morning', mood: 'warm · golden · fresh bread', s1: '#F2BE45', s2: '#EE8B4F', s3: '#F5F0E2', s4: '#2C5E3F' },
+      { id: 'sea', name: 'Sea Breeze', mood: 'calm · airy · light blue', s1: '#A9CFE8', s2: '#FFFDF4', s3: '#2C5E3F', s4: '#241F15' },
+      { id: 'forest', name: 'Forest Brunch', mood: 'green · earthy · botanical', s1: '#2C5E3F', s2: '#C4D89B', s3: '#F5F0E2', s4: '#F2BE45' },
+      { id: 'sunset', name: 'Sunset Aperitivo', mood: 'bold · evening · aperol', s1: '#EE8B4F', s2: '#F2BE45', s3: '#241F15', s4: '#FBF2D8' },
+      { id: 'sky', name: 'Sky Picnic', mood: 'playful · light · summer', s1: '#A9CFE8', s2: '#C4D89B', s3: '#F2BE45', s4: '#FFFDF4' },
+      { id: 'espresso', name: 'Midnight Espresso', mood: 'dark · intimate · candlelight', s1: '#241F15', s2: '#F2BE45', s3: '#FBF2D8', s4: '#2C5E3F' },
+      { id: 'matcha', name: 'Matcha Latte', mood: 'fresh · green · calm', s1: '#C4D89B', s2: '#2C5E3F', s3: '#F5F0E2', s4: '#FFFDF4' },
+      { id: 'peach', name: 'Peach Melba', mood: 'soft · sweet · friendly', s1: '#FBDFC9', s2: '#EE8B4F', s3: '#FFFDF4', s4: '#241F15' },
+      { id: 'ink', name: 'Ink & Paper', mood: 'minimal · contrast · editorial', s1: '#241F15', s2: '#F5F0E2', s3: '#FFFDF4', s4: '#EE8B4F' },
+    ].map(p => ({
+      ...p,
+      border: s.palette === p.id ? '2.5px solid #2C5E3F' : '1.5px solid rgba(36,31,21,.10)',
+      shadow: s.palette === p.id ? '0 14px 34px rgba(44,94,63,.22)' : 'none',
+      pickDisplay: s.palette === p.id ? 'inline-flex' : 'none',
+    }));
+
+    const fontCard = (id) => ({
+      border: s.font === id ? '2.5px solid #2C5E3F' : '1.5px solid rgba(36,31,21,.10)',
+      shadow: s.font === id ? '0 14px 34px rgba(44,94,63,.22)' : 'none',
+      pickDisplay: s.font === id ? 'inline-flex' : 'none',
+    });
+
+    const refsData = [
+      { id: 'ref1', num: '01', name: 'Bonanza Coffee', url: 'bonanzacoffee.de', why: en ? 'calm layout, great photos' : 'ruhiges Layout, tolle Fotos', href: 'https://bonanzacoffee.de', bg: '#FBEABF' },
+      { id: 'ref2', num: '02', name: 'Father Carpenter', url: 'fathercarpenter.com', why: en ? 'cozy, personal tone' : 'gemütlich, persönlicher Ton', href: 'https://fathercarpenter.com', bg: '#E3EEF0' },
+      { id: 'ref3', num: '03', name: 'ORA Berlin', url: 'ora-berlin.de', why: en ? 'bold type, strong identity' : 'mutige Typo, starke Identität', href: 'https://ora-berlin.de', bg: '#FBDFC9' },
+      { id: 'ref4', num: '04', name: 'The Barn', url: 'thebarn.de', why: en ? 'clean shop, product-first' : 'klarer Shop, Produkt zuerst', href: 'https://thebarn.de', bg: '#EBF0D6' },
+      { id: 'ref5', num: '05', name: 'Roamers', url: 'roamers.cc', why: en ? 'rustic charm, great mood photos' : 'rustikaler Charme, starke Fotos', href: 'https://roamers.cc', bg: '#FBEABF' },
+    ].map(r => ({
+      ...r,
+      likeBg: s.refLikes[r.id] ? '#2C5E3F' : '#FFFDF4',
+      likeFg: s.refLikes[r.id] ? '#FBF2D8' : '#241F15',
+    }));
+
+    const photoData = [
+      { id: 'p1', slotId: 'mood-latte', label: en ? 'latte art close-up' : 'Latte-Art nah' },
+      { id: 'p2', slotId: 'mood-corner', label: en ? 'cozy corners' : 'gemütliche Ecken' },
+      { id: 'p3', slotId: 'mood-counter', label: en ? 'behind the counter' : 'hinter der Theke' },
+      { id: 'p4', slotId: 'mood-people', label: en ? 'guests & laughter' : 'Gäste & Lachen' },
+      { id: 'p5', slotId: 'mood-food', label: en ? 'food from above' : 'Essen von oben' },
+      { id: 'p6', slotId: 'mood-street', label: en ? 'the street outside' : 'die Straße davor' },
+      { id: 'p7', slotId: 'mood-pastry', label: en ? 'pastry close-up' : 'Gebäck nah' },
+      { id: 'p8', slotId: 'mood-morning', label: en ? 'morning light' : 'Morgenlicht' },
+    ].map(p => ({
+      ...p,
+      heartBg: s.photoLoves[p.id] ? '#EE8B4F' : '#FFFDF4',
+      heartFg: s.photoLoves[p.id] ? '#FFFDF4' : 'rgba(36,31,21,.45)',
+    }));
+
+    // progress: 5 sections
+    const d1 = Object.keys(s.reactions).length > 0;
+    const d2 = !!s.palette;
+    const d3 = !!s.font;
+    const d4 = Object.keys(s.refLikes).some(k => s.refLikes[k]) || ['ref1','ref2','ref3'].some(k => (s.comments[k] || '').trim());
+    const d5 = Object.keys(s.photoLoves).some(k => s.photoLoves[k]);
+    const doneCount = [d1, d2, d3, d4, d5].filter(Boolean).length;
+    const dotOn = '#F2BE45', dotOff = 'rgba(251,242,216,.28)';
+
+    return {
+      clientName: this._params.get('name') || this.props.clientName || 'Luna Café',
+      contactName: this._params.get('contact') || this.props.contactName || 'Selin',
+      mascotSrc: 'assets/mascots/' + ({ cafe: 'cup', bakery: 'cake', bar: 'cheers', restaurant: 'chef', retail: 'vip' }[this._params.get('type')] || 'cup') + '.png?v=hd',
+      mascotEl: React.createElement('img', {
+        src: 'assets/mascots/' + ({ cafe: 'cup', bakery: 'cake', bar: 'cheers', restaurant: 'chef', retail: 'vip' }[this._params.get('type')] || 'cup') + '.png?v=hd',
+        alt: '',
+        style: { position: 'absolute', bottom: '-10px', right: '32%', width: '104px', transform: 'rotate(-5deg)', animation: 'floaty 5s ease-in-out infinite', zIndex: 4, pointerEvents: 'none' },
+      }),
+      hubLink: 'Project Hub.dc.html' + (window.location.search || ''),
+      isEn: en, isDe: !en, t,
+      langEnBg: en ? '#241F15' : 'transparent', langEnFg: en ? '#FFFDF4' : 'rgba(36,31,21,.64)',
+      langDeBg: !en ? '#241F15' : 'transparent', langDeFg: !en ? '#FFFDF4' : 'rgba(36,31,21,.64)',
+      setEn: () => this.setState({ lang: 'en' }),
+      setDe: () => this.setState({ lang: 'de' }),
+
+      rA: reactStyles('styleA'), rB: reactStyles('styleB'), rC: reactStyles('styleC'), rD: reactStyles('styleD'), rE: reactStyles('styleE'), rF: reactStyles('styleF'),
+      rankA: rank('styleA'), rankB: rank('styleB'), rankC: rank('styleC'), rankD: rank('styleD'), rankE: rank('styleE'), rankF: rank('styleF'),
+      onReact: (e) => {
+        const { item, val } = e.currentTarget.dataset;
+        this.setState(st => {
+          const reactions = { ...st.reactions, [item]: st.reactions[item] === val ? null : val };
+          let loveOrder = st.loveOrder.filter(x => x !== item);
+          if (reactions[item] === 'love') loveOrder = loveOrder.concat(item);
+          return { reactions, loveOrder };
+        }, persist);
+      },
+      toggleComment: (e) => {
+        const { item } = e.currentTarget.dataset;
+        this.setState(st => ({ openComments: { ...st.openComments, [item]: !st.openComments[item] } }));
+      },
+      cA: s.openComments.styleA ? 'block' : 'none',
+      cB: s.openComments.styleB ? 'block' : 'none',
+      cC: s.openComments.styleC ? 'block' : 'none',
+      cD: s.openComments.styleD ? 'block' : 'none',
+      cE: s.openComments.styleE ? 'block' : 'none',
+      cF: s.openComments.styleF ? 'block' : 'none',
+      onComment: (e) => {
+        const { item } = e.currentTarget.dataset;
+        const val = e.currentTarget.value;
+        this.setState(st => ({ comments: { ...st.comments, [item]: val } }), persist);
+      },
+
+      palettes: paletteData,
+      pickPalette: (e) => this.setState({ palette: e.currentTarget.dataset.item }, persist),
+
+      fRounded: fontCard('rounded'), fElegant: fontCard('elegant'), fModern: fontCard('modern'), fHandmade: fontCard('handmade'), fBold: fontCard('bold'), fChic: fontCard('chic'), fMono: fontCard('mono'),
+      pickFont: (e) => this.setState({ font: e.currentTarget.dataset.item }, persist),
+
+      refs: refsData,
+      toggleRefLike: (e) => {
+        const { item } = e.currentTarget.dataset;
+        this.setState(st => ({ refLikes: { ...st.refLikes, [item]: !st.refLikes[item] } }), persist);
+      },
+
+      photos: photoData,
+      toggleHeart: (e) => {
+        const { item } = e.currentTarget.dataset;
+        this.setState(st => ({ photoLoves: { ...st.photoLoves, [item]: !st.photoLoves[item] } }), persist);
+      },
+
+      progressText: doneCount + ' / 5',
+      dot1: d1 ? dotOn : dotOff, dot2: d2 ? dotOn : dotOff, dot3: d3 ? dotOn : dotOff,
+      dot4: d4 ? dotOn : dotOff, dot5: d5 ? dotOn : dotOff,
+
+      // ---- extras (custom links / photos / videos)
+      customItems: s.custom.map((c, i) => {
+        let embed = '', host = '';
+        if (c.kind === 'video' && !c.dataUrl) {
+          const m = (c.url || '').match(/(?:youtu\.be\/|v=|shorts\/)([\w-]{6,})/);
+          const vm = (c.url || '').match(/vimeo\.com\/(\d+)/);
+          embed = m ? 'https://www.youtube.com/embed/' + m[1] : (vm ? 'https://player.vimeo.com/video/' + vm[1] : c.url);
+        }
+        if (c.kind === 'link') {
+          try { host = new URL(c.url).hostname.replace('www.', ''); } catch (e) { host = c.url; }
+        }
+        const bgs = ['#FBEABF', '#E3EEF0', '#FBDFC9', '#EBF0D6'];
+        return {
+          ...c, embed, host,
+          bg: bgs[i % 4],
+          slotId: 'custom-' + c.id,
+          dataUrl: c.dataUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+          hasDataUrl: !!c.dataUrl && c.kind === 'photo',
+          hasVideoFile: !!c.dataUrl && c.kind === 'video',
+          hasEmbed: c.kind === 'video' && !c.dataUrl && !!embed,
+          mediaEl: c.dataUrl ? React.createElement(c.kind === 'video' ? 'video' : 'img', {
+            src: c.dataUrl,
+            alt: c.title,
+            controls: c.kind === 'video',
+            style: { width: '100%', height: '100%', display: 'block', objectFit: c.kind === 'video' ? 'contain' : 'cover' },
+          }) : null,
+          imgDisplay: c.dataUrl ? 'block' : 'none',
+          slotDisplay: c.dataUrl ? 'none' : 'block',
+          linkDisplay: c.kind === 'link' ? 'flex' : 'none',
+          videoDisplay: c.kind === 'video' ? 'flex' : 'none',
+          photoDisplay: c.kind === 'photo' ? 'flex' : 'none',
+          heartBg: s.customHearts[c.id] ? '#2C5E3F' : '#FFFDF4',
+          heartFg: s.customHearts[c.id] ? '#FBF2D8' : '#241F15',
+          byLabel: c.by === 'client' ? (en ? 'added by you' : 'von dir') : (en ? 'added by ' + (c.by || 'Mahyar') : 'von ' + (c.by || 'Mahyar')),
+        };
+      }),
+      kindLinkBg: s.addKind === 'link' ? '#2C5E3F' : 'transparent',
+      kindLinkFg: s.addKind === 'link' ? '#FBF2D8' : 'rgba(36,31,21,.64)',
+      kindPhotoBg: s.addKind === 'photo' ? '#2C5E3F' : 'transparent',
+      kindPhotoFg: s.addKind === 'photo' ? '#FBF2D8' : 'rgba(36,31,21,.64)',
+      kindVideoBg: s.addKind === 'video' ? '#2C5E3F' : 'transparent',
+      kindVideoFg: s.addKind === 'video' ? '#FBF2D8' : 'rgba(36,31,21,.64)',
+      setAddKind: (e) => this.setState({ addKind: e.currentTarget.dataset.kind }),
+      addTitle: s.addTitle,
+      addUrl: s.addUrl,
+      onAddTitle: (e) => this.setState({ addTitle: e.currentTarget.value }),
+      onAddUrl: (e) => this.setState({ addUrl: e.currentTarget.value }),
+      addUrlDisplay: s.addKind === 'photo' ? 'none' : 'block',
+      dropZoneBorder: s.dragOver ? '#2C5E3F' : 'rgba(36,31,21,.3)',
+      dropZoneBg: s.dragOver ? '#EBF0D6' : '#F5F0E2',
+      dropZoneLabel: s.dragOver
+        ? (en ? 'Drop it!' : 'Loslassen!')
+        : (en ? 'Drag & drop a photo, video or link here' : 'Foto, Video oder Link hierher ziehen'),
+      fileInputRef: this._fileInput,
+      browseFile: () => { if (this._fileInput.current) this._fileInput.current.click(); },
+      onFilePick: (e) => { this._handleFile(e.currentTarget.files[0]); e.currentTarget.value = ''; },
+      onFileDrop: (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const dt = e.dataTransfer;
+        if (dt && dt.files && dt.files.length) { this._handleFile(dt.files[0]); return; }
+        const text = dt && (dt.getData('text/uri-list') || dt.getData('text/plain'));
+        if (!this._handleDroppedText(text)) this.setState({ dragOver: false });
+      },
+      onFileDragOver: (e) => { e.preventDefault(); if (!this.state.dragOver) this.setState({ dragOver: true }); },
+      onFileDragLeave: () => this.setState({ dragOver: false }),
+      addUrlPh: s.addKind === 'video' ? 'https://youtube.com/watch?v=…' : 'https://…',
+      addCustom: () => {
+        const { addKind, addTitle, addUrl } = this.state;
+        if (!addTitle.trim() && !addUrl.trim()) return;
+        const item = { id: 'c' + Date.now(), kind: addKind, title: addTitle.trim() || (addKind === 'photo' ? (en ? 'My photo' : 'Mein Foto') : addUrl), url: addUrl.trim(), by: 'client' };
+        this.setState(st => {
+          const custom = st.custom.concat(item);
+          try { localStorage.setItem(this._k('custom'), JSON.stringify({ items: custom, hearts: st.customHearts })); } catch (e) {}
+          return { custom, addTitle: '', addUrl: '' };
+        });
+      },
+      removeCustom: (e) => {
+        const id = e.currentTarget.dataset.id;
+        this.setState(st => {
+          const custom = st.custom.filter(c => c.id !== id);
+          try { localStorage.setItem(this._k('custom'), JSON.stringify({ items: custom, hearts: st.customHearts })); } catch (e) {}
+          return { custom };
+        });
+      },
+      toggleCustomHeart: (e) => {
+        const id = e.currentTarget.dataset.id;
+        this.setState(st => {
+          const customHearts = { ...st.customHearts, [id]: !st.customHearts[id] };
+          try { localStorage.setItem(this._k('custom'), JSON.stringify({ items: st.custom, hearts: customHearts })); } catch (e) {}
+          return { customHearts };
+        });
+      },
+
+      submit: () => { persist(); this.setState({ done: true }); },
+      closeDone: () => this.setState({ done: false }),
+      doneDisplay: s.done ? 'flex' : 'none',
+    };
+  }
+}
+</script>
+</body>
+</html>

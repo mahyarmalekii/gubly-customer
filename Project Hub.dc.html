@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Baloo+2:wght@600;700;800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    body{ margin:0; background:#F5F0E2; color:#241F15; font-family:"Nunito",system-ui,sans-serif; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; text-wrap:pretty; }
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ color:#2C5E3F; }
+    ::selection{ background:#F2BE45; color:#241F15; }
+    @keyframes pulse{ 0%,100%{ opacity:1; transform:scale(1)} 50%{ opacity:.4; transform:scale(.7)} }
+    @keyframes floaty{ 0%,100%{ transform:translateY(0) rotate(-4deg)} 50%{ transform:translateY(-10px) rotate(-7deg)} }
+    @keyframes popIn{ 0%{ transform:scale(.6); opacity:0 } 70%{ transform:scale(1.12)} 100%{ transform:scale(1); opacity:1 } }
+    textarea{ font-family:"Nunito",sans-serif; }
+  </style>
+</helmet>
+
+<div data-screen-label="Client Project Hub" style="min-height:100vh; overflow-x:hidden">
+
+  <!-- ── Topbar ── -->
+  <div style="position:fixed; top:14px; left:0; right:0; z-index:50; display:flex; justify-content:center; padding:0 16px; pointer-events:none">
+    <div style="pointer-events:auto; display:flex; align-items:center; gap:18px; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.10); border-radius:999px; padding:8px 10px 8px 14px; width:min(1080px,100%); box-shadow:0 6px 22px rgba(36,31,21,.07)">
+      <div style="display:flex; align-items:center; gap:10px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px">
+        <span style="width:32px; height:32px; border-radius:50%; flex:none; display:grid; place-items:center; overflow:visible"><img src="assets/gubli-logo.png" alt="Gubly" style="width:126%; height:126%; object-fit:contain; margin:-13%"></span>
+        <span>Gubly <span style="color:rgba(36,31,21,.5); font-weight:500">× {{ clientName }}</span></span>
+      </div>
+      <nav style="display:flex; gap:4px; margin:0 auto">
+        <a href="#site" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Website</a>
+        <a href="#posts" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Posts</a>
+        <a href="#events" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Events</a>
+        <a href="#promos" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Promos</a>
+        <a href="#files" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; padding:7px 13px; border-radius:999px; color:rgba(36,31,21,.64)" style-hover="background:#F5F0E2; color:#241F15">Files</a>
+      </nav>
+      <div style="display:flex; gap:2px; background:#F5F0E2; border-radius:999px; padding:3px">
+        <button onClick="{{ setEn }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.05em; border:0; background:{{ langEnBg }}; color:{{ langEnFg }}; padding:5px 11px; border-radius:999px; cursor:pointer">EN</button>
+        <button onClick="{{ setDe }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.05em; border:0; background:{{ langDeBg }}; color:{{ langDeFg }}; padding:5px 11px; border-radius:999px; cursor:pointer">DE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Hero + timeline ── -->
+  <div style="max-width:1080px; margin:0 auto; padding:104px 16px 0">
+    <div style="border-radius:40px; padding:44px 46px; background:#C4D89B; position:relative; overflow:hidden">
+      <img src="assets/mascots/laptop.png?v=hd" alt="" style="position:absolute; right:30px; top:24px; width:min(190px,20vw); animation:floaty 5s ease-in-out infinite; pointer-events:none">
+      <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:22px">
+        <span style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(-2deg); background:#2C5E3F; color:#FBF2D8">
+          <span style="width:8px; height:8px; border-radius:50%; background:#9FE08A; animation:pulse 1.8s ease-in-out infinite"></span>
+          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">project in progress</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Projekt läuft</sc-if>
+        </span>
+      </div>
+      <h1 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(46px,7vw,92px); line-height:.96; text-transform:uppercase; margin:0">
+        Your project<span style="color:#EE8B4F">,</span><br><span style="color:#2C5E3F">{{ clientName }}</span>
+      </h1>
+      <p style="margin:16px 0 0; max-width:52ch; font-size:15.5px; opacity:.85">
+        <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Everything in one place: your website, posts waiting for your ✓, events and promos. This page updates as we go.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Alles an einem Ort: deine Website, Posts, die auf dein ✓ warten, Events und Aktionen. Diese Seite wächst mit.</sc-if>
+      </p>
+      <!-- timeline -->
+      <div style="display:flex; align-items:center; gap:0; margin-top:32px; flex-wrap:wrap; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.10); border-radius:999px; padding:10px 18px; width:fit-content; max-width:100%">
+        <sc-for list="{{ steps }}" as="st" hint-placeholder-count="4">
+          <div style="display:flex; align-items:center">
+            <div style="display:flex; align-items:center; gap:8px">
+              <span style="width:30px; height:30px; border-radius:50%; display:grid; place-items:center; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; background:{{ st.bg }}; color:{{ st.fg }}; border:{{ st.ring }}">{{ st.mark }}</span>
+              <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; color:{{ st.txt }}">{{ st.name }}</span>
+            </div>
+            <span style="width:34px; height:2px; background:rgba(36,31,21,.15); margin:0 12px; display:{{ st.lineDisplay }}"></span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Website preview ── -->
+  <section id="site" style="max-width:1080px; margin:0 auto; padding:44px 16px 20px; scroll-margin-top:110px">
+    <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:18px; align-items:stretch">
+      <div style="background:#FFFDF4; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:18px; box-shadow:0 14px 34px rgba(36,31,21,.09)">
+        <div style="display:flex; align-items:center; gap:8px; padding:4px 8px 14px">
+          <span style="width:11px; height:11px; border-radius:50%; background:#EE8B4F"></span>
+          <span style="width:11px; height:11px; border-radius:50%; background:#F2BE45"></span>
+          <span style="width:11px; height:11px; border-radius:50%; background:#C4D89B"></span>
+          <span style="margin-left:10px; flex:1; background:#F5F0E2; border-radius:999px; padding:5px 14px; font-family:'Fredoka',sans-serif; font-weight:500; font-size:12.5px; color:rgba(36,31,21,.6)">lunacafe.berlin — draft v2</span>
+        </div>
+        <div style="border-radius:18px; overflow:hidden; border:1.5px solid rgba(36,31,21,.12); background:#F5F0E2; padding:22px; display:flex; flex-direction:column; gap:14px; min-height:280px">
+          <div style="background:#FFFDF4; border-radius:999px; padding:6px 14px; display:flex; align-items:center; gap:8px; width:fit-content"><span style="width:16px; height:16px; border-radius:50%; background:#F2BE45"></span><span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:11px">{{ clientName }}</span></div>
+          <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(28px,3.4vw,42px); line-height:1; text-transform:uppercase">Coffee like<br><span style="color:#2C5E3F">a hug</span><span style="color:#EE8B4F">.</span></div>
+          <div style="display:flex; gap:10px; margin-top:auto">
+            <div style="flex:1.4; height:64px; border-radius:16px; background:#F2BE45"></div>
+            <div style="flex:1; height:64px; border-radius:16px; background:#A9CFE8"></div>
+            <div style="flex:1; height:64px; border-radius:16px; background:#EE8B4F"></div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#FBEABF; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:30px; display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#1F4630">
+          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">your website</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">deine Website</sc-if>
+        </span>
+        <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(26px,2.6vw,36px); text-transform:uppercase; line-height:1.02; margin:0">Draft v2 is live</h2>
+        <p style="margin:0; font-size:14.5px; opacity:.8">
+          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Built from your moodboard picks — Warm &amp; Cozy, Butter Morning palette, friendly rounded type.</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Gebaut aus deinen Moodboard-Favoriten — Warm &amp; Cozy, Butter-Morning-Palette, runde Schrift.</sc-if>
+        </p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:auto">
+          <a href="#site" style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; padding:11px 22px; border-radius:999px; background:#2C5E3F; color:#FFFDF4; transition:transform .18s ease" style-hover="transform:translateY(-2px); color:#FFFDF4">
+            <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">Open preview</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">Vorschau öffnen</sc-if> <span style="font-weight:800">↗</span>
+          </a>
+          <button onClick="{{ requestSiteChange }}" style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; padding:11px 22px; border-radius:999px; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.16); cursor:pointer; transition:transform .18s ease" style-hover="transform:translateY(-2px)">💬 {{ t.feedback }}</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Posts to approve ── -->
+  <section id="posts" style="max-width:1080px; margin:0 auto; padding:38px 16px; scroll-margin-top:110px">
+    <div style="margin-bottom:28px; display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:12px">
+      <div>
+        <span style="display:inline-flex; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(-2deg); background:#F2BE45; color:#241F15; margin-bottom:14px">
+          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">needs your ✓</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">braucht dein ✓</sc-if>
+        </span>
+        <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(34px,4.4vw,58px); line-height:1; text-transform:uppercase; margin:0">Posts to <span style="color:#2C5E3F">approve</span></h2>
+      </div>
+      <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; background:#EE8B4F; color:#241F15; border-radius:999px; padding:7px 16px; transform:rotate(2deg)">{{ pendingCount }} {{ t.waiting }}</span>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px">
+      <sc-for list="{{ posts }}" as="post" hint-placeholder-count="3">
+        <div style="background:#FFFDF4; border:1.5px solid rgba(36,31,21,.10); border-radius:30px; padding:18px; display:flex; flex-direction:column; gap:12px; position:relative; transition:transform .2s ease, box-shadow .2s ease" style-hover="transform:translateY(-4px); box-shadow:0 14px 34px rgba(36,31,21,.09)">
+          <div style="position:absolute; top:-12px; right:20px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:{{ post.badgeBg }}; color:{{ post.badgeFg }}; transform:rotate(3deg); animation:popIn .3s ease">{{ post.badge }}</div>
+          <div style="border-radius:18px; overflow:hidden; aspect-ratio:1/1; background:{{ post.bg }}; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:20px; text-align:center">
+            <img src="{{ post.mascot }}" alt="" style="width:84px">
+            <span style="font-family:'Baloo 2',cursive; font-weight:800; font-size:22px; line-height:1.1">{{ post.visual }}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; color:rgba(36,31,21,.6)">
+            <span style="background:#F5F0E2; border-radius:999px; padding:4px 12px">{{ post.channel }}</span>
+            <span>{{ post.date }}</span>
+          </div>
+          <p style="margin:0; font-size:14px; line-height:1.5">{{ post.caption }}</p>
+          <div style="display:flex; gap:8px; margin-top:auto">
+            <button data-id="{{ post.id }}" onClick="{{ approvePost }}" style="flex:1; font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; padding:10px 14px; border-radius:999px; border:0; cursor:pointer; background:{{ post.approveBg }}; color:{{ post.approveFg }}; transition:transform .15s ease" style-hover="transform:translateY(-2px)">{{ post.approveLabel }}</button>
+            <button data-id="{{ post.id }}" onClick="{{ requestChange }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; padding:10px 16px; border-radius:999px; cursor:pointer; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.16); transition:transform .15s ease" style-hover="transform:translateY(-2px)">✎</button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ── Marquee ── -->
+  <div style="margin:40px 0; background:#2C5E3F; transform:rotate(1deg) scale(1.02); overflow:hidden; padding:12px 0">
+    <div style="display:flex; width:max-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; letter-spacing:.14em; text-transform:uppercase; color:#FBF2D8; white-space:nowrap">
+      <span style="padding:0 18px">coming up</span><span style="color:#F2BE45">✷</span><span style="padding:0 18px">events</span><span style="color:#F2BE45">✷</span><span style="padding:0 18px">promotions</span><span style="color:#F2BE45">✷</span><span style="padding:0 18px">coming up</span><span style="color:#F2BE45">✷</span><span style="padding:0 18px">events</span><span style="color:#F2BE45">✷</span><span style="padding:0 18px">promotions</span><span style="color:#F2BE45">✷</span>
+    </div>
+  </div>
+
+  <!-- ── Events + Promos ── -->
+  <section id="events" style="max-width:1080px; margin:0 auto; padding:20px 16px 38px; scroll-margin-top:110px">
+    <div style="display:grid; grid-template-columns:1.25fr 1fr; gap:18px; align-items:start">
+      <div>
+        <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(30px,3.6vw,46px); line-height:1; text-transform:uppercase; margin:0 0 20px">Upcoming <span style="color:#2C5E3F">events</span></h2>
+        <div style="display:flex; flex-direction:column; gap:14px">
+          <sc-for list="{{ events }}" as="ev" hint-placeholder-count="3">
+            <div style="background:{{ ev.bg }}; border:1.5px solid rgba(36,31,21,.10); border-radius:26px; padding:20px 24px; display:grid; grid-template-columns:64px 1fr auto; gap:18px; align-items:center; transition:transform .2s ease" style-hover="transform:translateY(-3px)">
+              <div style="width:64px; height:64px; border-radius:18px; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.12); display:flex; flex-direction:column; align-items:center; justify-content:center">
+                <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px; line-height:1">{{ ev.day }}</span>
+                <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:rgba(36,31,21,.6)">{{ ev.mon }}</span>
+              </div>
+              <div>
+                <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:18px; text-transform:uppercase; line-height:1.15">{{ ev.name }}</div>
+                <div style="font-size:13.5px; color:rgba(36,31,21,.65)">{{ ev.meta }}</div>
+              </div>
+              <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.06em; text-transform:uppercase; background:#2C5E3F; color:#FBF2D8; border-radius:999px; padding:6px 13px; transform:rotate(-2deg)">{{ ev.tag }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div id="promos" style="scroll-margin-top:110px">
+        <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(30px,3.6vw,46px); line-height:1; text-transform:uppercase; margin:0 0 20px"><span style="color:#2C5E3F">Promos</span> running</h2>
+        <div style="display:flex; flex-direction:column; gap:14px">
+          <sc-for list="{{ promos }}" as="pr" hint-placeholder-count="2">
+            <div style="background:#FFFDF4; border:1.5px dashed rgba(36,31,21,.3); border-radius:22px; padding:20px 24px; position:relative; transition:transform .2s ease" style-hover="transform:translateY(-3px) rotate(-.5deg)">
+              <span style="position:absolute; top:-11px; right:18px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:11px; letter-spacing:.08em; text-transform:uppercase; background:{{ pr.tagBg }}; color:#241F15; border-radius:999px; padding:5px 12px; transform:rotate(3deg)">{{ pr.tag }}</span>
+              <div style="font-family:'Baloo 2',cursive; font-weight:800; font-size:24px; line-height:1.05">{{ pr.title }}</div>
+              <div style="font-size:13.5px; color:rgba(36,31,21,.65); margin-top:4px">{{ pr.meta }}</div>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:12px">
+                <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.14em; background:#F5F0E2; border-radius:10px; padding:6px 14px; border:1.5px solid rgba(36,31,21,.12)">{{ pr.code }}</span>
+                <span style="font-size:12.5px; color:rgba(36,31,21,.55)">{{ pr.stat }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Files ── -->
+  <section id="files" style="max-width:1080px; margin:0 auto; padding:10px 16px 70px; scroll-margin-top:110px">
+    <div style="background:#2C5E3F; border-radius:44px; padding:44px clamp(24px,4vw,50px); color:#FBF2D8">
+      <span style="display:inline-flex; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(-2deg); background:#F2BE45; color:#241F15; margin-bottom:16px">
+        <sc-if value="{{ isEn }}" hint-placeholder-val="{{ true }}">yours to keep</sc-if><sc-if value="{{ isDe }}" hint-placeholder-val="{{ false }}">gehört dir</sc-if>
+      </span>
+      <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(32px,4vw,52px); line-height:1; text-transform:uppercase; margin:0 0 26px">Files &amp; <span style="color:#F2BE45">deliverables</span></h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px">
+        <sc-for list="{{ files }}" as="f" hint-placeholder-count="4">
+          <div style="background:#FFFDF4; color:#241F15; border-radius:22px; padding:20px; display:flex; flex-direction:column; gap:6px; transition:transform .2s ease" style-hover="transform:translateY(-4px) rotate(-.5deg)">
+            <span style="font-size:26px">{{ f.icon }}</span>
+            <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; line-height:1.2">{{ f.name }}</span>
+            <span style="font-size:12.5px; color:rgba(36,31,21,.55)">{{ f.meta }}</span>
+            <span style="margin-top:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; color:#2C5E3F">{{ t.download }} ↓</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Feedback toast ── -->
+  <div style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:80; display:{{ toastDisplay }}; background:#241F15; color:#FBF2D8; font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; border-radius:999px; padding:12px 24px; box-shadow:0 14px 34px rgba(36,31,21,.3); animation:popIn .3s ease">{{ toastText }}</div>
+
+  <!-- ── Footer ── -->
+  <div style="max-width:1080px; margin:0 auto; padding:0 16px 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px">
+    <span style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:rgba(36,31,21,.55)">gubli · gastronomy &amp; retail digital services · Berlin</span>
+    <div style="display:flex; gap:14px">
+      <a href="Vibe Check.dc.html" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:rgba(36,31,21,.4)">(vibe check →)</a>
+      <a href="Admin Dashboard.dc.html" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:rgba(36,31,21,.4)">(admin view →)</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;clientName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Luna Café&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Client&quot;}}">
+class Component extends DCLogic {
+  _params = new URLSearchParams(window.location.search);
+  state = { lang: this._params.get('lang') === 'de' ? 'de' : 'en', approved: {}, toast: null };
+
+  _toast(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this._tt);
+    this._tt = setTimeout(() => this.setState({ toast: null }), 2600);
+  }
+
+  renderVals() {
+    const s = this.state;
+    const en = s.lang === 'en';
+    const t = en
+      ? { feedback: 'Give feedback', waiting: 'waiting', download: 'Download' }
+      : { feedback: 'Feedback geben', waiting: 'offen', download: 'Herunterladen' };
+
+    const steps = [
+      { name: en ? 'Kickoff' : 'Kickoff', state: 'done' },
+      { name: en ? 'Moodboard' : 'Moodboard', state: 'done' },
+      { name: en ? 'Design' : 'Design', state: 'now' },
+      { name: en ? 'Build' : 'Umsetzung', state: 'next' },
+      { name: en ? 'Launch' : 'Launch', state: 'next' },
+    ].map((st, i, arr) => ({
+      ...st,
+      mark: st.state === 'done' ? '✓' : (st.state === 'now' ? '★' : String(i + 1)),
+      bg: st.state === 'done' ? '#2C5E3F' : (st.state === 'now' ? '#F2BE45' : '#F5F0E2'),
+      fg: st.state === 'done' ? '#FBF2D8' : '#241F15',
+      ring: st.state === 'now' ? '2px solid #2C5E3F' : '1.5px solid rgba(36,31,21,.12)',
+      txt: st.state === 'next' ? 'rgba(36,31,21,.45)' : '#241F15',
+      lineDisplay: i === arr.length - 1 ? 'none' : 'block',
+    }));
+
+    const postsRaw = [
+      { id: 'po1', channel: 'Instagram', date: en ? 'Thu · 10 Jul' : 'Do · 10. Jul', bg: '#FBEABF', mascot: 'assets/mascots/moka.png?v=hd', visual: 'New house blend ☕', caption: en ? 'Say hi to our new house blend — nutty, chocolatey, roasted 2 km away. First 20 cups on us this Thursday!' : 'Unser neuer House Blend — nussig, schokoladig, 2 km entfernt geröstet. Die ersten 20 Tassen gehen aufs Haus!' },
+      { id: 'po2', channel: 'Instagram', date: en ? 'Sat · 12 Jul' : 'Sa · 12. Jul', bg: '#E3EEF0', mascot: 'assets/mascots/cake.png?v=hd', visual: 'Weekend brunch 🥐', caption: en ? 'Brunch is back! Sourdough, shakshuka and cinnamon buns straight from the oven — Saturdays from 9:30.' : 'Brunch ist zurück! Sauerteig, Shakshuka und Zimtschnecken frisch aus dem Ofen — samstags ab 9:30.' },
+      { id: 'po3', channel: 'Google Post', date: en ? 'Mon · 14 Jul' : 'Mo · 14. Jul', bg: '#FBDFC9', mascot: 'assets/mascots/flower.png?v=hd', visual: 'Summer terrace 🌞', caption: en ? 'Our little terrace is open — 12 sunny seats, iced oat lattes and free wifi. Come work from the sun.' : 'Unsere kleine Terrasse ist offen — 12 Sonnenplätze, Iced Oat Latte und freies WLAN.' },
+    ];
+    const posts = postsRaw.map(p => {
+      const ap = s.approved[p.id];
+      return {
+        ...p,
+        badge: ap === true ? (en ? '✓ approved' : '✓ freigegeben') : (ap === 'change' ? (en ? '✎ change requested' : '✎ Änderung') : (en ? 'draft' : 'Entwurf')),
+        badgeBg: ap === true ? '#2C5E3F' : (ap === 'change' ? '#EE8B4F' : '#F2BE45'),
+        badgeFg: ap === true ? '#FBF2D8' : '#241F15',
+        approveLabel: ap === true ? (en ? '✓ Approved' : '✓ Freigegeben') : (en ? 'Approve' : 'Freigeben'),
+        approveBg: ap === true ? '#C4D89B' : '#2C5E3F',
+        approveFg: ap === true ? '#241F15' : '#FBF2D8',
+      };
+    });
+    const pendingCount = postsRaw.filter(p => s.approved[p.id] !== true).length;
+
+    const events = [
+      { day: '18', mon: 'Jul', name: en ? 'Live jazz evening' : 'Live-Jazz-Abend', meta: en ? '19:00 · free entry · with Trio Mokka' : '19:00 · Eintritt frei · mit Trio Mokka', tag: en ? 'confirmed' : 'fix', bg: '#FBEABF' },
+      { day: '26', mon: 'Jul', name: en ? 'Latte art workshop' : 'Latte-Art-Workshop', meta: en ? '15:00 · 8 seats · 25 € incl. coffee' : '15:00 · 8 Plätze · 25 € inkl. Kaffee', tag: en ? 'tickets' : 'Tickets', bg: '#E3EEF0' },
+      { day: '02', mon: 'Aug', name: en ? 'Neighbourhood flea market' : 'Kiez-Flohmarkt', meta: en ? '10:00 · in front of the café' : '10:00 · vor dem Café', tag: en ? 'planned' : 'geplant', bg: '#EBF0D6' },
+    ];
+
+    const promos = [
+      { title: en ? '2-for-1 filter coffee' : '2-für-1 Filterkaffee', meta: en ? 'Mon–Wed before 10:00 · until 31 Jul' : 'Mo–Mi vor 10:00 · bis 31. Jul', code: 'EARLYBIRD', stat: en ? 'used 43×' : '43× genutzt', tag: 'live', tagBg: '#C4D89B' },
+      { title: en ? '−10 % for students' : '−10 % für Studis', meta: en ? 'always · show your card' : 'immer · Ausweis zeigen', code: 'STUDYFUEL', stat: en ? 'used 128×' : '128× genutzt', tag: 'live', tagBg: '#C4D89B' },
+    ];
+
+    const files = [
+      { icon: '🎨', name: en ? 'Logo pack' : 'Logo-Paket', meta: 'SVG · PNG · 2.1 MB' },
+      { icon: '📖', name: en ? 'Mini brand guide' : 'Mini-Brand-Guide', meta: 'PDF · 12 pages' },
+      { icon: '📷', name: en ? 'Photo set · Jun' : 'Fotoset · Jun', meta: '24 photos · 180 MB' },
+      { icon: '🧾', name: en ? 'Menu print files' : 'Menü-Druckdaten', meta: 'PDF/X · A4 + A5' },
+    ];
+
+    return {
+      clientName: this._params.get('name') || this.props.clientName || 'Luna Café',
+      isEn: en, isDe: !en, t,
+      langEnBg: en ? '#241F15' : 'transparent', langEnFg: en ? '#FFFDF4' : 'rgba(36,31,21,.64)',
+      langDeBg: !en ? '#241F15' : 'transparent', langDeFg: !en ? '#FFFDF4' : 'rgba(36,31,21,.64)',
+      setEn: () => this.setState({ lang: 'en' }),
+      setDe: () => this.setState({ lang: 'de' }),
+      steps, posts, pendingCount, events, promos, files,
+      approvePost: (e) => {
+        const id = e.currentTarget.dataset.id;
+        this.setState(st => ({ approved: { ...st.approved, [id]: st.approved[id] === true ? null : true } }));
+        this._toast(en ? '✓ Approved — Mahyar got a ping!' : '✓ Freigegeben — Mahyar wurde benachrichtigt!');
+      },
+      requestChange: (e) => {
+        const id = e.currentTarget.dataset.id;
+        this.setState(st => ({ approved: { ...st.approved, [id]: 'change' } }));
+        this._toast(en ? '✎ Change requested — tell Mahyar what to tweak' : '✎ Änderung angefragt — sag Mahyar, was anders soll');
+      },
+      requestSiteChange: () => this._toast(en ? '💬 Feedback window would open here' : '💬 Feedback-Fenster würde sich hier öffnen'),
+      toastDisplay: s.toast ? 'block' : 'none',
+      toastText: s.toast || '',
+    };
+  }
+}
+</script>
+</body>
+</html>

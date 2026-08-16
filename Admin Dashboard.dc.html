@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Baloo+2:wght@600;700;800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    body{ margin:0; background:#F5F0E2; color:#241F15; font-family:"Nunito",system-ui,sans-serif; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; text-wrap:pretty; }
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ color:#2C5E3F; }
+    ::selection{ background:#F2BE45; color:#241F15; }
+    @keyframes pulse{ 0%,100%{ opacity:1; transform:scale(1)} 50%{ opacity:.4; transform:scale(.7)} }
+    @keyframes popIn{ 0%{ transform:scale(.6); opacity:0 } 70%{ transform:scale(1.12)} 100%{ transform:scale(1); opacity:1 } }
+  </style>
+</helmet>
+
+<div data-screen-label="Admin Dashboard" style="min-height:100vh; overflow-x:hidden">
+
+  <!-- ── Topbar ── -->
+  <div style="position:fixed; top:14px; left:0; right:0; z-index:50; display:flex; justify-content:center; padding:0 16px; pointer-events:none">
+    <div style="pointer-events:auto; display:flex; align-items:center; gap:18px; background:#241F15; color:#FBF2D8; border-radius:999px; padding:8px 10px 8px 14px; width:min(1120px,100%); box-shadow:0 6px 22px rgba(36,31,21,.2)">
+      <div style="display:flex; align-items:center; gap:10px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px">
+        <span style="width:32px; height:32px; border-radius:50%; flex:none; display:grid; place-items:center; overflow:visible"><img src="assets/gubli-logo.png" alt="Gubly" style="width:126%; height:126%; object-fit:contain; margin:-13%"></span>
+        <span>Gubly <span style="color:rgba(251,242,216,.55); font-weight:500">· studio</span></span>
+      </div>
+      <span style="margin:0 auto; display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; background:#2C5E3F; border-radius:999px; padding:6px 14px">
+        <span style="width:8px; height:8px; border-radius:50%; background:#9FE08A; animation:pulse 1.8s ease-in-out infinite"></span> admin — only you
+      </span>
+      <div style="display:flex; gap:8px">
+        <a href="Vibe Check.dc.html" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; padding:8px 16px; border-radius:999px; background:rgba(251,242,216,.12); color:#FBF2D8" style-hover="color:#FBF2D8; background:rgba(251,242,216,.22)">Client view ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1120px; margin:0 auto; padding:100px 16px 60px">
+
+    <!-- ── Header row ── -->
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:26px">
+      <div>
+        <span style="display:inline-flex; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:7px 16px; border-radius:999px; transform:rotate(-2deg); background:#2C5E3F; color:#FBF2D8; margin-bottom:14px">your clients</span>
+        <h1 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(40px,5.4vw,72px); line-height:.98; text-transform:uppercase; margin:0">Client <span style="color:#2C5E3F">links</span></h1>
+      </div>
+      <button onClick="{{ newClient }}" style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:16px; padding:13px 26px; border-radius:999px; border:0; cursor:pointer; background:#2C5E3F; color:#FFFDF4; transition:transform .18s ease, box-shadow .18s ease" style-hover="transform:translateY(-2px); box-shadow:0 8px 18px rgba(36,31,21,.16)">+ New client link</button>
+    </div>
+
+    <!-- ── Client cards ── -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; margin-bottom:52px">
+      <sc-for list="{{ clients }}" as="cl" hint-placeholder-count="3">
+        <div style="background:{{ cl.bg }}; border:{{ cl.cardBorder }}; border-radius:30px; padding:24px; display:flex; flex-direction:column; gap:14px; position:relative; cursor:pointer; transition:transform .2s ease, box-shadow .2s ease" style-hover="transform:translateY(-4px); box-shadow:0 14px 34px rgba(36,31,21,.09)" data-id="{{ cl.id }}" onClick="{{ selectClient }}">
+          <div style="position:absolute; top:-12px; right:20px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:{{ cl.phaseBg }}; color:{{ cl.phaseFg }}; transform:rotate(3deg)">{{ cl.phase }}</div>
+          <div style="display:flex; align-items:center; gap:14px">
+            <img src="{{ cl.mascot }}" alt="" style="width:56px; height:56px; object-fit:contain">
+            <div>
+              <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:21px; text-transform:uppercase; line-height:1.1">{{ cl.name }}</div>
+              <div style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:rgba(36,31,21,.6)">{{ cl.type }} · {{ cl.lang }}</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:14px; font-size:13px; color:rgba(36,31,21,.7)">
+            <span>👀 {{ cl.visits }} visits</span>
+            <span>🕐 {{ cl.lastVisit }}</span>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:auto">
+            <button data-link="{{ cl.link }}" onClick="{{ copyLink }}" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:9px 14px; border-radius:999px; cursor:pointer; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.16); transition:transform .15s ease" style-hover="transform:translateY(-2px)">🔗 {{ cl.copyLabel }}</button>
+            <span style="display:inline-flex; align-items:center; font-family:'Fredoka',sans-serif; font-weight:500; font-size:12px; color:rgba(36,31,21,.5); background:#FFFDF4; border:1.5px solid rgba(36,31,21,.10); border-radius:999px; padding:0 14px">gub.li/{{ cl.slug }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- ── Results panel for selected client ── -->
+    <div style="background:#FFFDF4; border:1.5px solid rgba(36,31,21,.10); border-radius:44px; padding:38px clamp(22px,4vw,46px); box-shadow:0 14px 34px rgba(36,31,21,.09)">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:26px">
+        <div>
+          <span style="display:inline-flex; font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.1em; text-transform:uppercase; padding:6px 14px; border-radius:999px; background:#F2BE45; transform:rotate(-2deg); margin-bottom:10px">results · {{ selName }}</span>
+          <h2 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:clamp(30px,3.6vw,48px); line-height:1; text-transform:uppercase; margin:0">What {{ selShort }} <span style="color:#2C5E3F">told us</span></h2>
+        </div>
+        <div style="display:flex; gap:4px; background:#F5F0E2; border-radius:999px; padding:4px">
+          <button data-tab="picks" onClick="{{ setTab }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; border:0; cursor:pointer; padding:9px 18px; border-radius:999px; background:{{ tabPicksBg }}; color:{{ tabPicksFg }}">Picks</button>
+          <button data-tab="attention" onClick="{{ setTab }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; border:0; cursor:pointer; padding:9px 18px; border-radius:999px; background:{{ tabAttBg }}; color:{{ tabAttFg }}">Attention</button>
+          <button data-tab="heat" onClick="{{ setTab }}" style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; border:0; cursor:pointer; padding:9px 18px; border-radius:999px; background:{{ tabHeatBg }}; color:{{ tabHeatFg }}">Heatmap</button>
+        </div>
+      </div>
+
+      <!-- Tab: Picks -->
+      <div style="display:{{ picksDisplay }}">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-bottom:20px">
+          <sc-for list="{{ picks }}" as="pk" hint-placeholder-count="4">
+            <div style="background:{{ pk.bg }}; border:1.5px solid rgba(36,31,21,.10); border-radius:24px; padding:20px 22px">
+              <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:rgba(36,31,21,.55)">{{ pk.cat }}</div>
+              <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:20px; text-transform:uppercase; margin-top:4px; line-height:1.15">{{ pk.winner }}</div>
+              <div style="font-size:13px; color:rgba(36,31,21,.65); margin-top:4px">{{ pk.detail }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="border-top:1.5px dashed rgba(36,31,21,.18); padding-top:18px">
+          <div style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:rgba(36,31,21,.55); margin-bottom:12px">comments</div>
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <sc-for list="{{ commentList }}" as="cm" hint-placeholder-count="2">
+              <div style="display:flex; gap:12px; align-items:flex-start">
+                <span style="width:34px; height:34px; border-radius:50%; background:#F2BE45; display:grid; place-items:center; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px; flex:none">{{ cm.initial }}</span>
+                <div style="background:#F5F0E2; border-radius:4px 18px 18px 18px; padding:10px 16px; font-size:14px"><b style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:#2C5E3F">{{ cm.on }}</b><br>{{ cm.text }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Attention (dwell) -->
+      <div style="display:{{ attDisplay }}">
+        <div style="display:grid; grid-template-columns:1fr auto auto; gap:12px 18px; align-items:center; margin-bottom:22px">
+          <sc-for list="{{ dwell }}" as="dw" hint-placeholder-count="5">
+            <div style="display:contents">
+              <div style="display:flex; align-items:center; gap:12px">
+                <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; width:130px; flex:none; text-transform:uppercase">{{ dw.name }}</span>
+                <div style="flex:1; height:26px; background:#F5F0E2; border-radius:999px; overflow:hidden">
+                  <div style="height:100%; width:{{ dw.pct }}; background:{{ dw.color }}; border-radius:999px; transition:width .6s ease"></div>
+                </div>
+              </div>
+              <span style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; white-space:nowrap">{{ dw.secs }}</span>
+              <span style="font-size:12.5px; color:rgba(36,31,21,.55); white-space:nowrap">{{ dw.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap">
+          <sc-for list="{{ sessionStats }}" as="ss" hint-placeholder-count="3">
+            <div style="background:#F5F0E2; border-radius:999px; padding:9px 18px; display:flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px">
+              <span>{{ ss.icon }}</span> {{ ss.label }} <b style="color:#2C5E3F">{{ ss.value }}</b>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- Tab: Heatmap -->
+      <div style="display:{{ heatDisplay }}">
+        <div style="display:grid; grid-template-columns:minmax(240px,340px) 1fr; gap:26px; align-items:start">
+          <!-- miniature page with heat dots -->
+          <div style="position:relative; border-radius:22px; overflow:hidden; border:1.5px solid rgba(36,31,21,.14); background:#F5F0E2; aspect-ratio:9/16">
+            <!-- mini page sketch -->
+            <div style="position:absolute; inset:0; padding:10px; display:flex; flex-direction:column; gap:7px; opacity:.6">
+              <div style="height:14px; border-radius:999px; background:#FFFDF4; border:1px solid rgba(36,31,21,.12)"></div>
+              <div style="height:17%; border-radius:12px; background:#F2BE45"></div>
+              <div style="display:flex; gap:6px; height:15%"><div style="flex:1; border-radius:10px; background:#FBEABF"></div><div style="flex:1; border-radius:10px; background:#E3EEF0"></div><div style="flex:1; border-radius:10px; background:#FBDFC9"></div></div>
+              <div style="display:flex; gap:6px; height:10%"><div style="flex:1; border-radius:10px; background:#FFFDF4; border:1px solid rgba(36,31,21,.1)"></div><div style="flex:1; border-radius:10px; background:#FFFDF4; border:1px solid rgba(36,31,21,.1)"></div><div style="flex:1; border-radius:10px; background:#FFFDF4; border:1px solid rgba(36,31,21,.1)"></div><div style="flex:1; border-radius:10px; background:#FFFDF4; border:1px solid rgba(36,31,21,.1)"></div></div>
+              <div style="display:flex; gap:6px; height:12%"><div style="flex:1; border-radius:10px; background:#FBEABF"></div><div style="flex:1; border-radius:10px; background:#E3EEF0"></div><div style="flex:1; border-radius:10px; background:#EBF0D6"></div></div>
+              <div style="height:8%; border-radius:10px; background:#FFFDF4; border:1px solid rgba(36,31,21,.1)"></div>
+              <div style="height:8%; border-radius:10px; background:#FFFDF4; border:1px solid rgba(36,31,21,.1)"></div>
+              <div style="display:flex; gap:6px; flex:1"><div style="flex:1; border-radius:10px; background:#E3EEF0"></div><div style="flex:1; border-radius:10px; background:#FBDFC9"></div></div>
+            </div>
+            <!-- heat dots -->
+            <sc-for list="{{ heatPoints }}" as="hp" hint-placeholder-count="0">
+              <span style="position:absolute; left:{{ hp.x }}; top:{{ hp.y }}; width:{{ hp.size }}; height:{{ hp.size }}; margin-left:-14px; margin-top:-14px; border-radius:50%; background:radial-gradient(circle, rgba(238,139,79,.75) 0%, rgba(242,190,69,.35) 55%, transparent 75%); pointer-events:none; mix-blend-mode:multiply"></span>
+            </sc-for>
+            <span style="position:absolute; bottom:10px; left:10px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:11px; letter-spacing:.06em; text-transform:uppercase; background:#241F15; color:#FBF2D8; border-radius:999px; padding:4px 11px">{{ heatCount }} clicks</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:14px">
+            <h3 style="font-family:'Fredoka',sans-serif; font-weight:600; font-size:22px; text-transform:uppercase; margin:0">Where {{ selShort }} clicked</h3>
+            <p style="margin:0; font-size:14.5px; color:rgba(36,31,21,.7); max-width:52ch">Every tap on the moodboard lands here as a warm dot — hotter clusters mean more interest. Combined with dwell time, you can see what pulled them in before they made their pick.</p>
+            <div style="display:flex; flex-direction:column; gap:8px">
+              <sc-for list="{{ heatInsights }}" as="hi" hint-placeholder-count="3">
+                <div style="display:flex; gap:10px; align-items:center; background:{{ hi.bg }}; border:1.5px solid rgba(36,31,21,.10); border-radius:18px; padding:12px 16px">
+                  <span style="font-size:18px">{{ hi.icon }}</span>
+                  <span style="font-size:14px"><b style="font-family:'Fredoka',sans-serif">{{ hi.head }}</b> — {{ hi.body }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <button onClick="{{ refreshHeat }}" style="width:fit-content; font-family:'Fredoka',sans-serif; font-weight:600; font-size:13.5px; padding:9px 18px; border-radius:999px; cursor:pointer; background:#FFFDF4; border:1.5px solid rgba(36,31,21,.16); transition:transform .15s ease" style-hover="transform:translateY(-2px)">↻ Refresh live data</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- advance phase -->
+      <div style="margin-top:28px; border-top:1.5px dashed rgba(36,31,21,.18); padding-top:22px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px">
+        <span style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:14px; color:rgba(36,31,21,.65)">Happy with the picks? Flip their link from moodboard to project hub.</span>
+        <a href="Project Hub.dc.html" style="display:inline-flex; align-items:center; gap:8px; font-family:'Fredoka',sans-serif; font-weight:600; font-size:15px; padding:12px 24px; border-radius:999px; background:#EE8B4F; color:#241F15; transition:transform .18s ease" style-hover="transform:translateY(-2px); color:#241F15">Advance to project hub <span style="font-weight:800">→</span></a>
+      </div>
+    </div>
+
+    <!-- toast -->
+    <div style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:80; display:{{ toastDisplay }}; background:#241F15; color:#FBF2D8; font-family:'Fredoka',sans-serif; font-weight:600; font-size:14px; border-radius:999px; padding:12px 24px; box-shadow:0 14px 34px rgba(36,31,21,.3); animation:popIn .3s ease">{{ toastText }}</div>
+
+    <div style="padding-top:34px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px">
+      <span style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:rgba(36,31,21,.55)">gubli studio · only visible to you</span>
+      <div style="display:flex; gap:14px">
+        <a href="Vibe Check.dc.html" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:rgba(36,31,21,.4)">(vibe check →)</a>
+        <a href="Project Hub.dc.html" style="font-family:'Fredoka',sans-serif; font-weight:500; font-size:13px; color:rgba(36,31,21,.4)">(project hub →)</a>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'picks', selected: 'luna', toast: null, heatTick: 0 };
+
+  _toast(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this._tt);
+    this._tt = setTimeout(() => this.setState({ toast: null }), 2400);
+  }
+
+  _readLS(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch (e) { return fallback; }
+  }
+
+  renderVals() {
+    const s = this.state;
+
+    const clientsRaw = [
+      { id: 'luna', name: 'Luna Café', short: 'Selin', type: 'Café · Berlin', lang: 'EN/DE', slug: 'luna', phase: 'moodboard', mascot: 'assets/mascots/cup.png?v=hd', visits: null, lastVisit: null, bg: '#FBEABF' },
+      { id: 'pane', name: 'Pane e Sale', short: 'Marco', type: 'Bakery · Berlin', lang: 'DE', slug: 'pane', phase: 'design', mascot: 'assets/mascots/cake.png?v=hd', visits: 9, lastVisit: '2 d ago', bg: '#E3EEF0' },
+      { id: 'velvet', name: 'Velvet Bar', short: 'Aylin', type: 'Bar · Berlin', lang: 'EN', slug: 'velvet', phase: 'live hub', mascot: 'assets/mascots/cheers.png?v=hd', visits: 21, lastVisit: 'today', bg: '#FBDFC9' },
+    ];
+
+    // live data from the actual moodboard prototype (localStorage)
+    const visits = this._readLS('gubli_visits_luna', { count: 3 });
+    const dwellLS = this._readLS('gubli_dwell_luna', {});
+    const heatLS = this._readLS('gubli_heat_luna', []);
+    const respLS = this._readLS('gubli_resp_luna', {});
+
+    const phaseColors = { moodboard: ['#F2BE45', '#241F15'], design: ['#A9CFE8', '#241F15'], 'live hub': ['#2C5E3F', '#FBF2D8'] };
+    const clients = clientsRaw.map(c => ({
+      ...c,
+      visits: c.id === 'luna' ? visits.count : c.visits,
+      lastVisit: c.id === 'luna' ? (visits.last ? 'just now' : '—') : c.lastVisit,
+      phaseBg: phaseColors[c.phase][0], phaseFg: phaseColors[c.phase][1],
+      cardBorder: s.selected === c.id ? '2.5px solid #2C5E3F' : '1.5px solid rgba(36,31,21,.10)',
+      link: 'https://gub.li/' + c.slug + '?t=k3x9',
+      copyLabel: 'Copy link',
+    }));
+    const sel = clientsRaw.find(c => c.id === s.selected) || clientsRaw[0];
+
+    // ---- picks (live where available, demo otherwise)
+    const styleNames = { styleA: 'Warm & Cozy', styleB: 'Fresh & Minimal', styleC: 'Bold & Playful' };
+    const palNames = { butter: 'Butter Morning', sea: 'Sea Breeze', forest: 'Forest Brunch', sunset: 'Sunset Aperitivo' };
+    const fontNames = { rounded: 'Friendly & round', elegant: 'Elegant & classic', modern: 'Modern & crisp' };
+    const topStyle = (respLS.loveOrder && respLS.loveOrder[0]) ? styleNames[respLS.loveOrder[0]] : 'Warm & Cozy';
+    const lovedCount = respLS.loveOrder ? respLS.loveOrder.length : 1;
+    const picks = [
+      { cat: 'style direction', winner: topStyle, detail: lovedCount > 1 ? '#1 of ' + lovedCount + ' loved' : 'first & only love ❤️', bg: '#FBEABF' },
+      { cat: 'color palette', winner: respLS.palette ? palNames[respLS.palette] : 'Butter Morning', detail: 'picked once, no second-guessing', bg: '#E3EEF0' },
+      { cat: 'typography', winner: respLS.font ? fontNames[respLS.font] : 'Friendly & round', detail: 'matches the style pick', bg: '#FBDFC9' },
+      { cat: 'photo mood', winner: (respLS.photoLoves ? Object.values(respLS.photoLoves).filter(Boolean).length : 3) + ' hearts', detail: 'cozy corners & latte art lead', bg: '#EBF0D6' },
+    ];
+
+    const liveComments = Object.entries(respLS.comments || {}).filter(([, v]) => (v || '').trim());
+    const commentList = liveComments.length
+      ? liveComments.map(([k, v]) => ({ initial: sel.short[0], on: k.replace('style', 'style '), text: v }))
+      : [
+          { initial: 'S', on: 'Warm & Cozy', text: 'This one instantly feels like our corner spot. Maybe slightly less orange?' },
+          { initial: 'S', on: 'Bonanza Coffee', text: 'Love how calm it is — I want our menu to be this easy to read.' },
+        ];
+
+    // ---- dwell
+    const dwellDemo = { styles: 84, colors: 41, fonts: 32, refs: 57, photos: 26 };
+    const dwellData = Object.keys(dwellLS).length ? dwellLS : dwellDemo;
+    const maxD = Math.max(...Object.values(dwellData), 1);
+    const dwellMeta = {
+      styles: ['Styles', '#F2BE45', 'looked back 4× before loving'],
+      colors: ['Colors', '#A9CFE8', 'quick, confident pick'],
+      fonts: ['Fonts', '#EE8B4F', 'hovered elegant, chose rounded'],
+      refs: ['References', '#C4D89B', 'opened all 3 sites'],
+      photos: ['Photos', '#2C5E3F', 'fastest section'],
+    };
+    const dwell = Object.entries(dwellMeta).map(([k, [name, color, note]]) => {
+      const secs = dwellData[k] || 0;
+      return { name, color, note, secs: secs + 's', pct: Math.round((secs / maxD) * 100) + '%' };
+    });
+
+    const totalSecs = Object.values(dwellData).reduce((a, b) => a + b, 0);
+    const sessionStats = [
+      { icon: '👀', label: 'visits', value: String(visits.count) },
+      { icon: '⏱', label: 'total time', value: Math.floor(totalSecs / 60) + 'm ' + (totalSecs % 60) + 's' },
+      { icon: '🕐', label: 'last visit', value: visits.last ? new Date(visits.last).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : 'today' },
+      { icon: '📱', label: 'device', value: 'mobile' },
+    ];
+
+    // ---- heat
+    const demoHeat = [];
+    let seed = 7;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const clusters = [[0.5, 0.16], [0.28, 0.3], [0.55, 0.31], [0.8, 0.3], [0.3, 0.52], [0.62, 0.53], [0.5, 0.78]];
+    clusters.forEach(([cx, cy]) => {
+      const n = 4 + Math.floor(rnd() * 6);
+      for (let i = 0; i < n; i++) demoHeat.push([cx + (rnd() - 0.5) * 0.16, cy + (rnd() - 0.5) * 0.07]);
+    });
+    const heatData = heatLS.length >= 5 ? heatLS : demoHeat;
+    const heatPoints = heatData.slice(-160).map(([x, y]) => ({
+      x: Math.round(Math.min(Math.max(x, 0.03), 0.97) * 100) + '%',
+      y: Math.round(Math.min(Math.max(y, 0.02), 0.98) * 100) + '%',
+      size: '28px',
+    }));
+
+    const heatInsights = [
+      { icon: '🔥', head: 'Hottest: Warm & Cozy card', body: 'a third of all clicks land on style direction A', bg: '#FBEABF' },
+      { icon: '🤔', head: 'Long pause on fonts', body: 'hovered "Elegant" 40s before choosing "Rounded"', bg: '#E3EEF0' },
+      { icon: '💤', head: 'Photos barely explored', body: 'consider fewer, bigger mood shots next round', bg: '#FBDFC9' },
+    ];
+
+    const tabBtn = (id) => ({
+      bg: s.tab === id ? '#2C5E3F' : 'transparent',
+      fg: s.tab === id ? '#FBF2D8' : 'rgba(36,31,21,.64)',
+    });
+
+    return {
+      clients,
+      selectClient: (e) => this.setState({ selected: e.currentTarget.dataset.id }),
+      copyLink: (e) => {
+        e.stopPropagation();
+        const link = e.currentTarget.dataset.link;
+        try { navigator.clipboard.writeText(link); } catch (err) {}
+        this._toast('🔗 Link copied — send it to your client!');
+      },
+      newClient: () => this._toast('✨ New client wizard would open here'),
+      selName: sel.name, selShort: sel.short,
+      tabPicksBg: tabBtn('picks').bg, tabPicksFg: tabBtn('picks').fg,
+      tabAttBg: tabBtn('attention').bg, tabAttFg: tabBtn('attention').fg,
+      tabHeatBg: tabBtn('heat').bg, tabHeatFg: tabBtn('heat').fg,
+      setTab: (e) => this.setState({ tab: e.currentTarget.dataset.tab }),
+      picksDisplay: s.tab === 'picks' ? 'block' : 'none',
+      attDisplay: s.tab === 'attention' ? 'block' : 'none',
+      heatDisplay: s.tab === 'heat' ? 'block' : 'none',
+      picks, commentList, dwell, sessionStats, heatPoints, heatInsights,
+      heatCount: heatData.length,
+      refreshHeat: () => { this.setState({ heatTick: s.heatTick + 1 }); this._toast('↻ Pulled latest visit data'); },
+      toastDisplay: s.toast ? 'block' : 'none',
+      toastText: s.toast || '',
+    };
+  }
+}
+</script>
+</body>
+</html>
